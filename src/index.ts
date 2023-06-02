@@ -1,5 +1,6 @@
 export * from "./assert.js";
 export * from "./capitalize.js";
+export * from "./clamp.js";
 export * from "./create-pagination.js";
 export * from "./create-timer.js";
 export * from "./create-url.js";

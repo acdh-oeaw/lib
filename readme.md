@@ -10,6 +10,7 @@ npm i @acdh-oeaw/lib
 
 - `assert`
 - `capitalize`
+- `clamp`
 - `create-pagination`
 - `create-timer`
 - `create-url`
