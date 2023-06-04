@@ -28,3 +28,4 @@ npm i @acdh-oeaw/lib
 - `range`
 - `times`
 - `unique`
+- `wait`

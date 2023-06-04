@@ -19,3 +19,4 @@ export * from "./promise.js";
 export * from "./range.js";
 export * from "./times.js";
 export * from "./unique.js";
+export * from "./wait.js";
