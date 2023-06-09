@@ -16,6 +16,7 @@ npm i @acdh-oeaw/lib
 - `create-url`
 - `create-url-search-params`
 - `group-by`
+- `is-non-nullable`
 - `is-nonempty-array`
 - `is-nonempty-string`
 - `is-url`

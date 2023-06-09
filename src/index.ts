@@ -7,6 +7,7 @@ export * from "./create-url.js";
 export * from "./create-url-search-params.js";
 export * from "./error.js";
 export * from "./group-by.js";
+export * from "./is-non-nullable.js";
 export * from "./is-nonempty-array.js";
 export * from "./is-nonempty-string.js";
 export * from "./is-url.js";
