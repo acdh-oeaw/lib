@@ -1,45 +1,53 @@
-import { install } from "@sinonjs/fake-timers";
+import { install, type InstalledClock } from "@sinonjs/fake-timers";
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
 
 import { createTimer } from "./create-timer.js";
 import { noop } from "./noop.js";
 
-const test = suite("createTimer");
+interface Context {
+	clock: InstalledClock;
+}
+
+const test = suite<Context>("createTimer");
 
 test.before((context) => {
-	context["clock"] = install();
+	context.clock = install({ shouldClearNativeTimers: true });
 });
 
 test.after((context) => {
-	context["clock"].uninstall();
+	context.clock.uninstall();
 });
 
 test("should start new timer", (context) => {
 	let result = 0;
+
 	createTimer(() => {
 		result++;
 	}, 200);
-	context["clock"].tick(100);
+
+	context.clock.tick(100);
 	assert.is(result, 0);
-	context["clock"].tick(100);
+	context.clock.tick(100);
 	assert.is(result, 1);
 });
 
 test("should pause and resume timer", (context) => {
 	let result = 0;
+
 	const timer = createTimer(() => {
 		result++;
 	}, 200);
-	context["clock"].tick(100);
+
+	context.clock.tick(100);
 	assert.is(result, 0);
 	timer.pause();
-	context["clock"].tick(200);
+	context.clock.tick(200);
 	assert.is(result, 0);
 	timer.resume();
-	context["clock"].tick(50);
+	context.clock.tick(50);
 	assert.is(result, 0);
-	context["clock"].tick(50);
+	context.clock.tick(50);
 	assert.is(result, 1);
 });
 

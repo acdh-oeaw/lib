@@ -11,7 +11,7 @@ interface Context {
 const test = suite<Context>("wait");
 
 test.before((context) => {
-	context.clock = install();
+	context.clock = install({ shouldClearNativeTimers: true });
 });
 
 test.after((context) => {
