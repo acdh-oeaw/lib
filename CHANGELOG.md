@@ -1,5 +1,21 @@
 # @acdh-oeaw/lib
 
+## 0.1.2
+
+### Patch Changes
+
+- [`945a6c3`](https://github.com/acdh-oeaw/lib/commit/945a6c3411c67bd6685a0e140b472f0c05d1f5c5)
+  Thanks [@stefanprobst](https://github.com/stefanprobst)! - add request utility
+
+- [`945a6c3`](https://github.com/acdh-oeaw/lib/commit/945a6c3411c67bd6685a0e140b472f0c05d1f5c5)
+  Thanks [@stefanprobst](https://github.com/stefanprobst)! - make wait abortable
+
+- [`945a6c3`](https://github.com/acdh-oeaw/lib/commit/945a6c3411c67bd6685a0e140b472f0c05d1f5c5)
+  Thanks [@stefanprobst](https://github.com/stefanprobst)! - add is-non-nullable utility
+
+- [`56801ec`](https://github.com/acdh-oeaw/lib/commit/56801ec3632f95514efa794d29cab9c956925aaa)
+  Thanks [@stefanprobst](https://github.com/stefanprobst)! - add is-non-nullable type guard
+
 ## 0.1.1
 
 ### Patch Changes
