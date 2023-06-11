@@ -18,6 +18,7 @@ export * from "./omit.js";
 export * from "./pick.js";
 export * from "./promise.js";
 export * from "./range.js";
+export * from "./request.js";
 export * from "./times.js";
 export * from "./unique.js";
 export * from "./wait.js";

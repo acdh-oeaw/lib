@@ -3,7 +3,7 @@
 ## how to install
 
 ```bash
-npm i @acdh-oeaw/lib
+npm install @acdh-oeaw/lib
 ```
 
 ## utilities
@@ -27,6 +27,7 @@ npm i @acdh-oeaw/lib
 - `pick`
 - `promise`
 - `range`
+- `request`
 - `times`
 - `unique`
 - `wait`
