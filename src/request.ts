@@ -49,8 +49,18 @@ function shouldRetry(context: RequestContext) {
 		return false;
 	}
 
-	if (context.response.status === 413 && context.response.headers.get("retry-after") == null) {
+	const header = context.response.headers.get("retry-after");
+
+	if (context.response.status === 413 && header == null) {
 		return false;
+	}
+
+	if (header != null) {
+		const delay = Number(header);
+
+		if (delay < 1 || delay > 10_000) {
+			return false;
+		}
 	}
 
 	return true;
