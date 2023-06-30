@@ -98,6 +98,28 @@ test("should create URL", () => {
 		),
 		"https://example.com/path?key=value",
 	);
+
+	assert.is(
+		String(
+			createUrl({
+				baseUrl: "https://example.com/path/",
+				pathname: "nested",
+				searchParams: createUrlSearchParams({ key: "value" }),
+			}),
+		),
+		"https://example.com/path/nested?key=value",
+	);
+
+	assert.is(
+		String(
+			createUrl({
+				baseUrl: new URL("https://example.com/path/"),
+				pathname: "nested",
+				searchParams: createUrlSearchParams({ key: "value" }),
+			}),
+		),
+		"https://example.com/path/nested?key=value",
+	);
 });
 
 test.run();
