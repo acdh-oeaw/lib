@@ -11,6 +11,7 @@ npm install @acdh-oeaw/lib
 - `assert`
 - `capitalize`
 - `clamp`
+- `create-headers`
 - `create-pagination`
 - `create-timer`
 - `create-url`

@@ -15,7 +15,7 @@
 		"node": ">=18",
 		"pnpm": ">=8"
 	},
-	"packageManager": "pnpm@8.6.1",
+	"packageManager": "pnpm@8.6.5",
 	"scripts": {
 		"build": "tsup ./src/index.ts",
 		"ci:release": "changeset publish",

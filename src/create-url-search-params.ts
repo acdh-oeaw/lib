@@ -1,6 +1,4 @@
-type Nullable<T> = T | null | undefined;
-
-type Primitive = boolean | number | string;
+import { type Nullable, type Primitive } from "./types.js";
 
 export type CreateUrlSearchParamsParams = Record<
 	string,
