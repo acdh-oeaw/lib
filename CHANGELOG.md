@@ -1,5 +1,12 @@
 # @acdh-oeaw/lib
 
+## 0.1.4
+
+### Patch Changes
+
+- [`f351857`](https://github.com/acdh-oeaw/lib/commit/f351857d5526c14c8f71e739c271afc78e154fe8)
+  Thanks [@stefanprobst](https://github.com/stefanprobst)! - make request config type public
+
 ## 0.1.3
 
 ### Patch Changes
