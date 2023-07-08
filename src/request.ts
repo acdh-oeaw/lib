@@ -120,7 +120,7 @@ interface RequestContext {
 	error: Error | null;
 }
 
-interface RequestConfig extends Omit<RequestInit, "body"> {
+export interface RequestConfig extends Omit<RequestInit, "body"> {
 	body?: Record<string, unknown> | RequestInit["body"];
 	/** @internal */
 	count?: number;
