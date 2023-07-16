@@ -1,5 +1,12 @@
 # @acdh-oeaw/lib
 
+## 0.1.5
+
+### Patch Changes
+
+- [`1a5f781`](https://github.com/acdh-oeaw/lib/commit/1a5f7810b307138ff68ca81951c5aaf462f37821)
+  Thanks [@stefanprobst](https://github.com/stefanprobst)! - add debounce utility
+
 ## 0.1.4
 
 ### Patch Changes
