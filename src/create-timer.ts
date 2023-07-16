@@ -1,36 +1,30 @@
 import { assert } from "./assert.js";
-import { noop } from "./noop.js";
-
-type TimerId = ReturnType<typeof setTimeout>;
+import { type Fn, type TimerId } from "./types.js";
 
 export function createTimer(
-	callback: () => void,
-	timeout: number,
+	callback: Fn,
+	delay: number,
 ): { pause: () => void; resume: () => void } {
-	if (timeout === Infinity) {
-		return { pause: noop, resume: noop };
-	}
+	assert(Number.isSafeInteger(delay) && delay > 0, "Delay must be positive integer.");
 
-	assert(Number.isSafeInteger(timeout) && timeout > 0, "Timeout must be positive integer.");
+	let timer: TimerId | null = setTimeout(callback, delay);
 
-	let timer: TimerId | null = setTimeout(callback, timeout);
-
-	let startedAt = Date.now();
-	let remaining = timeout;
+	let startedAt = performance.now();
+	let remaining = delay;
 
 	function pause() {
 		if (timer === null) return;
 
 		clearTimeout(timer);
 		timer = null;
-		remaining -= Date.now() - startedAt;
+		remaining -= performance.now() - startedAt;
 	}
 
 	function resume() {
 		if (timer !== null) return;
 
 		timer = setTimeout(callback, remaining);
-		startedAt = Date.now();
+		startedAt = performance.now();
 	}
 
 	return { pause, resume };

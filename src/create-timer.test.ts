@@ -51,11 +51,10 @@ test("should pause and resume timer", (context) => {
 	assert.is(result, 1);
 });
 
-test("should return noop functions when timeout is Infinity", () => {
-	const timer = createTimer(noop, Infinity);
-
-	assert.type(timer.pause, "function");
-	assert.type(timer.resume, "function");
+test("should throw when timeout is Infinity", () => {
+	assert.throws(() => {
+		createTimer(noop, Infinity);
+	});
 });
 
 test("should throw when timeout is negative number", () => {

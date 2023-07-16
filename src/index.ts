@@ -6,6 +6,7 @@ export * from "./create-pagination.js";
 export * from "./create-timer.js";
 export * from "./create-url.js";
 export * from "./create-url-search-params.js";
+export * from "./debounce.js";
 export * from "./error.js";
 export * from "./group-by.js";
 export * from "./is-non-nullable.js";
