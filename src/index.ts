@@ -15,6 +15,8 @@ export * from "./is-nonempty-string.js";
 export * from "./is-url.js";
 export * from "./key-by.js";
 export * from "./log.js";
+export * from "./merge-headers.js";
+export * from "./merge-url-search-params.js";
 export * from "./noop.js";
 export * from "./omit.js";
 export * from "./pick.js";

@@ -24,6 +24,8 @@ npm install @acdh-oeaw/lib
 - `is-url`
 - `key-by`
 - `log`
+- `merge-headers`
+- `merge-url-search-params`
 - `noop`
 - `omit`
 - `pick`
