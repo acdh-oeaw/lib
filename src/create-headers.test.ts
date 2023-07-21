@@ -22,4 +22,28 @@ test("should create Headers", () => {
 	);
 });
 
+test("should allow passing Headers", () => {
+	assert.equal(Array.from(createHeaders(new Headers([["content-type", "application/json"]]))), [
+		["content-type", "application/json"],
+	]);
+});
+
+test("should allow passing Array", () => {
+	assert.equal(
+		Array.from(
+			createHeaders([
+				["accept", "text/html"],
+				["accept", "text/xml"],
+				["null", null],
+				["undefined", undefined],
+				["content-type", "application/json"],
+			]),
+		),
+		[
+			["accept", "text/html, text/xml"],
+			["content-type", "application/json"],
+		],
+	);
+});
+
 test.run();
