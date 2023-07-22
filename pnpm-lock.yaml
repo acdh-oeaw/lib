@@ -38,6 +38,9 @@ devDependencies:
   eslint:
     specifier: ^8.45.0
     version: 8.45.0
+  is-ci:
+    specifier: ^3.0.1
+    version: 3.0.1
   lint-staged:
     specifier: ^13.2.3
     version: 13.2.3
