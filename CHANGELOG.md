@@ -1,5 +1,17 @@
 # @acdh-oeaw/lib
 
+## 0.1.6
+
+### Patch Changes
+
+- [`3a5783c`](https://github.com/acdh-oeaw/lib/commit/3a5783c1092ca0391bb025cade28f06a744bedee)
+  Thanks [@stefanprobst](https://github.com/stefanprobst)! - add utilities to merge headers and
+  search params
+
+- [`91f4d6f`](https://github.com/acdh-oeaw/lib/commit/91f4d6f2b6d4c89ccc0e73415d1191b3c4296e94)
+  Thanks [@stefanprobst](https://github.com/stefanprobst)! - allow passing array and instance to
+  create-url-search-params and create-headers
+
 ## 0.1.5
 
 ### Patch Changes
