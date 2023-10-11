@@ -13,6 +13,7 @@ test("should key by value", () => {
 		{ id: "4", category: "a" },
 	];
 
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 	const expected = Object.assign(Object.create(null), {
 		1: { id: "1", category: "a" },
 		2: { id: "2", category: "b" },

@@ -13,6 +13,7 @@ test("should group by value", () => {
 		{ id: "4", category: "a" },
 	];
 
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 	const expected = Object.assign(Object.create(null), {
 		a: [
 			{ id: "1", category: "a" },
@@ -73,6 +74,7 @@ test("should group by multiple values", () => {
 		{ id: "4", categories: ["a"] },
 	];
 
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 	const expected = Object.assign(Object.create(null), {
 		a: [
 			{ id: "1", categories: ["a", "c"] },

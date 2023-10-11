@@ -21,7 +21,7 @@ test.after((context) => {
 test("should wait", async (context) => {
 	let result = 0;
 
-	wait(200).then(() => {
+	void wait(200).then(() => {
 		result++;
 	});
 
