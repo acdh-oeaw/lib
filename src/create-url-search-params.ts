@@ -12,13 +12,22 @@ export function createUrlSearchParams(params: CreateUrlSearchParamsParams): URLS
 		return new URLSearchParams(params);
 	}
 
-	/**
-	 * Typescript does not natively allow passing `FormData`, because it could contain `File` fields,
-	 * which would be serialized as `"[object File]"`.
-	 *
-	 * @see https://github.com/microsoft/TypeScript/issues/30584
-	 */
-	if (params instanceof URLSearchParams || params instanceof FormData) {
+	if (
+		params instanceof URLSearchParams ||
+		/**
+		 * Next.js wraps `URLSearchParams` in their own `ReadonlyURLSearchParams`.
+		 *
+		 * @see https://github.com/vercel/next.js/blob/canary/packages/next/src/client/components/navigation.ts#L25
+		 */
+		params.constructor.name === "ReadonlyURLSearchParams" ||
+		/**
+		 * Typescript does not natively allow passing `FormData`, because it could contain `File` fields,
+		 * which would be serialized as `"[object File]"`.
+		 *
+		 * @see https://github.com/microsoft/TypeScript/issues/30584
+		 */
+		params instanceof FormData
+	) {
 		// @ts-expect-error See above.
 		return new URLSearchParams(params);
 	}
