@@ -1,5 +1,13 @@
 # @acdh-oeaw/lib
 
+## 0.1.7
+
+### Patch Changes
+
+- [`380d809`](https://github.com/acdh-oeaw/lib/commit/380d8095cfb658569c49d52e1fbeab6a94d3faaa)
+  Thanks [@stefanprobst](https://github.com/stefanprobst)! - treat next.js ReadonlyURLSearchParams
+  like URLSearchParams
+
 ## 0.1.6
 
 ### Patch Changes
