@@ -18,6 +18,7 @@ npm install @acdh-oeaw/lib
 - `create-url-search-params`
 - `debounce`
 - `group-by`
+- `includes`
 - `is-non-nullable`
 - `is-nonempty-array`
 - `is-nonempty-string`

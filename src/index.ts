@@ -9,6 +9,7 @@ export * from "./create-url-search-params.js";
 export * from "./debounce.js";
 export * from "./error.js";
 export * from "./group-by.js";
+export * from "./includes.js";
 export * from "./is-non-nullable.js";
 export * from "./is-nonempty-array.js";
 export * from "./is-nonempty-string.js";
