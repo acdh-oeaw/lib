@@ -26,4 +26,5 @@ export * from "./range.js";
 export * from "./request.js";
 export * from "./times.js";
 export * from "./unique.js";
+export * from "./unreachable.js";
 export * from "./wait.js";

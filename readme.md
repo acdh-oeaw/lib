@@ -35,4 +35,5 @@ npm install @acdh-oeaw/lib
 - `request`
 - `times`
 - `unique`
+- `unreachable`
 - `wait`
