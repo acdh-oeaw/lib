@@ -24,6 +24,7 @@ export * from "./pick.js";
 export * from "./promise.js";
 export * from "./range.js";
 export * from "./request.js";
+export * from "./set.js";
 export * from "./times.js";
 export * from "./unique.js";
 export * from "./unreachable.js";

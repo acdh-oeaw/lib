@@ -33,6 +33,7 @@ npm install @acdh-oeaw/lib
 - `promise`
 - `range`
 - `request`
+- `set`
 - `times`
 - `unique`
 - `unreachable`
