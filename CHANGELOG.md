@@ -1,5 +1,25 @@
 # @acdh-oeaw/lib
 
+## 0.1.8
+
+### Patch Changes
+
+- [`4bbf774`](https://github.com/acdh-oeaw/lib/commit/4bbf774d429cacd4586d828c091b2043cb114cf0)
+  Thanks [@stefanprobst](https://github.com/stefanprobst)! - add set utility
+
+- [`6a0e15f`](https://github.com/acdh-oeaw/lib/commit/6a0e15f187d3ceecd1997739273f08e292ed22e0)
+  Thanks [@stefanprobst](https://github.com/stefanprobst)! - add includes utility
+
+- [`a09e9f6`](https://github.com/acdh-oeaw/lib/commit/a09e9f606e570bf9d1d02bfff52a38cba34927fc)
+  Thanks [@stefanprobst](https://github.com/stefanprobst)! - add unreachable util
+
+- [`0e28c3d`](https://github.com/acdh-oeaw/lib/commit/0e28c3d2f9df5bcab1f1bb028bb756e5e9a4da03)
+  Thanks [@stefanprobst](https://github.com/stefanprobst)! - remove no-longer-necessary workaround
+  for next.js ReadonlyURLSearchParams
+
+- [`980abe1`](https://github.com/acdh-oeaw/lib/commit/980abe17f1d12e975e8afd5b03f25ae37cb87704)
+  Thanks [@stefanprobst](https://github.com/stefanprobst)! - disable minification
+
 ## 0.1.7
 
 ### Patch Changes
