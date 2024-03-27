@@ -170,7 +170,7 @@ export async function request(input: RequestInfo | URL, config: RequestConfig): 
 			? setTimeout(() => {
 					const reason = new DOMException("TimeoutError", "TimeoutError");
 					controller.abort(reason);
-			  }, timeout)
+				}, timeout)
 			: null;
 
 	// TODO: Need to merge headers when `input` is instanceof `Request`.
