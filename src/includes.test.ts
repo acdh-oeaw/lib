@@ -18,3 +18,5 @@ test("should have type error when value is not a supertype of values", () => {
 	// @ts-expect-error Error is expected.
 	includes(values, value);
 });
+
+test.run();

@@ -17,7 +17,10 @@ npm install @acdh-oeaw/lib
 - `create-url`
 - `create-url-search-params`
 - `debounce`
+- `get`
+- `get-form-data-values`
 - `group-by`
+- `identity`
 - `includes`
 - `is-non-nullable`
 - `is-nonempty-array`
