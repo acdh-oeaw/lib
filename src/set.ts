@@ -20,5 +20,5 @@ export function set(
 	}
 
 	const segment = segments[i]!;
-	o[segment] = value;
+	o[segment] = typeof value === "function" ? value(o[segment]) : value;
 }

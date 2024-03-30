@@ -42,4 +42,10 @@ test("should preserve keys on original object", () => {
 	assert.equal(obj, { one: { two: { three: "test" }, other: true } });
 });
 
+test("should pass current value to setter function", () => {
+	const obj = { one: { two: [1, 2] } };
+	set(obj, ["one", "two"], (currentValue: Array<number>) => [...currentValue, 3]);
+	assert.equal(obj, { one: { two: [1, 2, 3] } });
+});
+
 test.run();
