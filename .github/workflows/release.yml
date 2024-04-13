@@ -36,7 +36,7 @@ jobs:
         with:
           commit: "build: version package"
           title: "build: release new package version"
-          # version: pnpm run ci:version
+          version: pnpm run ci:version
           publish: pnpm run ci:release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

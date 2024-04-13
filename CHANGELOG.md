@@ -4,7 +4,9 @@
 
 ### Patch Changes
 
-- [`e720f45`](https://github.com/acdh-oeaw/lib/commit/e720f45edce4e57640efb20436aeb20072a7ab0c) Thanks [@stefanprobst](https://github.com/stefanprobst)! - feat: add get-form-data-values, get, and identity utilities
+- [`e720f45`](https://github.com/acdh-oeaw/lib/commit/e720f45edce4e57640efb20436aeb20072a7ab0c)
+  Thanks [@stefanprobst](https://github.com/stefanprobst)! - feat: add get-form-data-values, get,
+  and identity utilities
 
 ## 0.1.8
 

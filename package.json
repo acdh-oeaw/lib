@@ -15,12 +15,13 @@
 		"node": ">=20",
 		"pnpm": ">=8"
 	},
-	"packageManager": "pnpm@8.15.5",
+	"packageManager": "pnpm@8.15.6",
 	"scripts": {
 		"build": "tsup ./src/index.ts",
 		"changeset:add": "changeset add",
 		"changeset:status": "changeset status --verbose",
 		"ci:release": "changeset publish",
+		"ci:version": "changeset version && prettier \"**/CHANGELOG.md\" --write",
 		"format:check": "prettier . --cache --check --ignore-path ./.gitignore",
 		"format:fix": "pnpm run format:check --write",
 		"lint:check": "eslint . --cache --ignore-path ./.gitignore",
