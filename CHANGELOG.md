@@ -1,5 +1,12 @@
 # @acdh-oeaw/lib
 
+## 0.1.10
+
+### Patch Changes
+
+- [`d2abbcc`](https://github.com/acdh-oeaw/lib/commit/d2abbcc91f31c793fa77a3d1998aff89ed58d262)
+  Thanks [@stefanprobst](https://github.com/stefanprobst)! - allow setter function on set
+
 ## 0.1.9
 
 ### Patch Changes
