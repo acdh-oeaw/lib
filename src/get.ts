@@ -1,3 +1,13 @@
+/**
+ * To get better types, install `type-fest` and use the `Get` and `Paths` types:
+ *
+ * ```ts
+ * import { get as _get } from '@acdh-oeaw/lib';
+ * import type { Get } from "type-fest";
+ *
+ * const get = _get as <BaseType, Path extends Array<string> | string>(obj: BaseType, path: Path) => Get<BaseType, Path>
+ * ```
+ */
 export function get(
 	obj: Record<number | string, unknown>,
 	path: Array<number | string> | string,
