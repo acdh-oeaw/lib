@@ -1,5 +1,12 @@
 # @acdh-oeaw/lib
 
+## 0.1.11
+
+### Patch Changes
+
+- [`70aaf48`](https://github.com/acdh-oeaw/lib/commit/70aaf48616baecfa352af2f0ff7972bfe765603b)
+  Thanks [@stefanprobst](https://github.com/stefanprobst)! - add template utility
+
 ## 0.1.10
 
 ### Patch Changes
