@@ -1,5 +1,12 @@
 # @acdh-oeaw/lib
 
+## 0.1.12
+
+### Patch Changes
+
+- [`2cf44eb`](https://github.com/acdh-oeaw/lib/commit/2cf44eb7beb2378b98cd353b045a34d75ff92f9d)
+  Thanks [@stefanprobst](https://github.com/stefanprobst)! - add iso-date format utility
+
 ## 0.1.11
 
 ### Patch Changes
