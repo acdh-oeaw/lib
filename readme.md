@@ -26,6 +26,7 @@ npm install @acdh-oeaw/lib
 - `is-nonempty-array`
 - `is-nonempty-string`
 - `is-url`
+- `iso-date`
 - `key-by`
 - `log`
 - `merge-headers`
