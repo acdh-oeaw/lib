@@ -238,6 +238,7 @@ export async function request(input: RequestInfo | URL, config: RequestConfig): 
 			return null;
 		}
 
+		// eslint-disable-next-line @typescript-eslint/return-await
 		return context.response[contentType]();
 	} catch (error) {
 		context.error = error as Error;
@@ -256,6 +257,7 @@ export async function request(input: RequestInfo | URL, config: RequestConfig): 
 					await hooks.beforeRetry(context);
 				}
 
+				// eslint-disable-next-line @typescript-eslint/return-await
 				return request(context.request, { count: count + 1 });
 			} else {
 				context.error = error as Error;
