@@ -10,6 +10,7 @@ dist/
 
 # caches
 .eslintcache
+.prettiercache
 *.tsbuildinfo
 
 # misc

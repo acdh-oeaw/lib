@@ -12,17 +12,17 @@
 	],
 	"sideEffects": false,
 	"engines": {
-		"node": ">=20",
+		"node": ">=22",
 		"pnpm": "9.x"
 	},
-	"packageManager": "pnpm@9.9.0",
+	"packageManager": "pnpm@9.10.0",
 	"scripts": {
 		"build": "tsup",
 		"changeset:add": "changeset add",
 		"changeset:status": "changeset status --verbose",
 		"ci:release": "changeset publish",
 		"ci:version": "changeset version && prettier \"**/CHANGELOG.md\" --write",
-		"format:check": "prettier . --cache --check --ignore-path ./.gitignore",
+		"format:check": "prettier . --cache --cache-location ./.prettiercache --check --ignore-path ./.gitignore",
 		"format:fix": "pnpm run format:check --write",
 		"lint:check": "eslint . --cache",
 		"lint:fix": "pnpm run lint:check --fix",
@@ -34,18 +34,20 @@
 		"validate": "run-p format:check lint:check types:check test"
 	},
 	"devDependencies": {
-		"@acdh-oeaw/commitlint-config": "^1.0.0",
-		"@acdh-oeaw/eslint-config": "^2.0.0",
+		"@acdh-oeaw/commitlint-config": "^2.0.0",
+		"@acdh-oeaw/eslint-config": "^2.0.1",
+		"@acdh-oeaw/eslint-config-node": "^2.0.1",
 		"@acdh-oeaw/prettier-config": "^2.0.0",
 		"@acdh-oeaw/tsconfig-lib": "^1.0.2",
 		"@changesets/changelog-github": "^0.5.0",
 		"@changesets/cli": "^2.27.8",
-		"@commitlint/cli": "^18.6.1",
+		"@commitlint/cli": "^19.5.0",
 		"@sinonjs/fake-timers": "^13.0.1",
 		"@types/node": "^22.5.4",
 		"@types/sinonjs__fake-timers": "^8.1.5",
 		"eslint": "^9.10.0",
 		"eslint-config-flat-gitignore": "^0.3.0",
+		"globals": "^15.9.0",
 		"is-ci": "^3.0.1",
 		"lint-staged": "^15.2.10",
 		"listhen": "^1.7.2",
@@ -57,25 +59,15 @@
 		"typescript": "^5.5.4",
 		"uvu": "^0.5.6"
 	},
-	"pnpm": {
-		"overrides": {
-			"@commitlint/config-conventional": "$@commitlint/cli"
-		},
-		"updateConfig": {
-			"ignoreDependencies": [
-				"@commitlint/cli"
-			]
-		}
-	},
 	"commitlint": {
 		"extends": "@acdh-oeaw/commitlint-config"
 	},
 	"lint-staged": {
-		"*.ts": [
+		"*.@(js|ts)": [
 			"eslint --cache --fix",
-			"prettier --cache --write"
+			"prettier --cache --cache-location ./.prettiercache --write"
 		],
-		"*.!(ts)": "prettier --cache --ignore-unknown --write"
+		"*.!(js|ts)": "prettier --cache --cache-location ./.prettiercache --ignore-unknown --write"
 	},
 	"prettier": "@acdh-oeaw/prettier-config",
 	"simple-git-hooks": {
