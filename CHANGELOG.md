@@ -1,5 +1,12 @@
 # @acdh-oeaw/lib
 
+## 0.2.0
+
+### Minor Changes
+
+- [`dbc9a4e`](https://github.com/acdh-oeaw/lib/commit/dbc9a4ebda0cdd24de5e2919b245eec42bea5999)
+  Thanks [@stefanprobst](https://github.com/stefanprobst)! - improve request types
+
 ## 0.1.12
 
 ### Patch Changes
