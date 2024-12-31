@@ -133,6 +133,23 @@ export interface RequestConfig extends Omit<RequestInit, "body"> {
 	timeout?: number | false;
 }
 
+interface ResponseTypeToReturnType {
+	arrayBuffer: ArrayBuffer;
+	blob: Blob;
+	formData: FormData;
+	json: unknown;
+	raw: Response;
+	// eslint-disable-next-line n/no-unsupported-features/node-builtins
+	stream: ReadableStream<Uint8Array> | null;
+	text: string;
+	void: null;
+}
+
+export async function request<T extends ResponseType>(
+	input: RequestInfo | URL,
+	config: RequestConfig & { responseType?: T | ((context: RequestContext) => T) },
+): Promise<ResponseTypeToReturnType[T]>;
+
 export async function request(input: RequestInfo | URL, config: RequestConfig): Promise<unknown> {
 	const {
 		count = 0,
@@ -238,7 +255,7 @@ export async function request(input: RequestInfo | URL, config: RequestConfig): 
 			return null;
 		}
 
-		// eslint-disable-next-line @typescript-eslint/return-await
+		// eslint-disable-next-line @typescript-eslint/return-await, @typescript-eslint/no-unsafe-return
 		return context.response[contentType]();
 	} catch (error) {
 		context.error = error as Error;
