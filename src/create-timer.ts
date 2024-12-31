@@ -13,7 +13,9 @@ export function createTimer(
 	let remaining = delay;
 
 	function pause() {
-		if (timer === null) return;
+		if (timer === null) {
+			return;
+		}
 
 		clearTimeout(timer);
 		timer = null;
@@ -21,7 +23,9 @@ export function createTimer(
 	}
 
 	function resume() {
-		if (timer !== null) return;
+		if (timer !== null) {
+			return;
+		}
 
 		timer = setTimeout(callback, remaining);
 		startedAt = performance.now();

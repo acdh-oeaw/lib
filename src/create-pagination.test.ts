@@ -231,8 +231,12 @@ function pad(page: number): string {
 function pretty(pagination: Array<PaginationItem>, currentPage: number): string {
 	return pagination
 		.map((item) => {
-			if (item.type === "ellipsis") return " .. ";
-			if (item.page === currentPage) return `[${pad(item.page)}]`;
+			if (item.type === "ellipsis") {
+				return " .. ";
+			}
+			if (item.page === currentPage) {
+				return `[${pad(item.page)}]`;
+			}
 			return ` ${pad(item.page)} `;
 		})
 		.join("-");

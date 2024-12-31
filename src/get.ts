@@ -22,7 +22,9 @@ export function get(
 
 		o = o[segment] as Record<number | string, unknown>;
 		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-		if (o == null) break;
+		if (o == null) {
+			break;
+		}
 	}
 
 	return o;
