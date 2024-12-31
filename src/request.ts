@@ -120,24 +120,25 @@ interface RequestContext {
 	error: Error | null;
 }
 
-export interface RequestConfig extends Omit<RequestInit, "body"> {
+export interface RequestConfig<TResponseType extends ResponseType = ResponseType>
+	extends Omit<RequestInit, "body"> {
 	body?: Record<string, unknown> | RequestInit["body"];
 	/** @internal */
 	count?: number;
 	fetch?: Fetch;
 	hooks?: Hooks;
 	method?: HttpMethod;
-	responseType?: ResponseType | ((context: RequestContext) => ResponseType);
+	responseType?: TResponseType | ((context: RequestContext) => TResponseType);
 	retries?: RetryConfig;
 	/** @default 10_000 */
 	timeout?: number | false;
 }
 
-interface ResponseTypeToReturnType {
+interface GetReturnType<TData = unknown> {
 	arrayBuffer: ArrayBuffer;
 	blob: Blob;
 	formData: FormData;
-	json: unknown;
+	json: TData;
 	raw: Response;
 	// eslint-disable-next-line n/no-unsupported-features/node-builtins
 	stream: ReadableStream<Uint8Array> | null;
@@ -145,10 +146,15 @@ interface ResponseTypeToReturnType {
 	void: null;
 }
 
-export async function request<T extends ResponseType>(
+export async function request<TData, TResponseType extends "json" = "json">(
 	input: RequestInfo | URL,
-	config: RequestConfig & { responseType?: T | ((context: RequestContext) => T) },
-): Promise<ResponseTypeToReturnType[T]>;
+	config: RequestConfig<TResponseType>,
+): Promise<GetReturnType<TData>[TResponseType]>;
+
+export async function request<TData = unknown, TResponseType extends ResponseType = ResponseType>(
+	input: RequestInfo | URL,
+	config: RequestConfig<TResponseType>,
+): Promise<GetReturnType<TData>[TResponseType]>;
 
 export async function request(input: RequestInfo | URL, config: RequestConfig): Promise<unknown> {
 	const {
