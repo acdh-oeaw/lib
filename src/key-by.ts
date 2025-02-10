@@ -1,5 +1,5 @@
 export function keyBy<T extends object, K extends number | string>(
-	values: Array<T>,
+	values: ReadonlyArray<T>,
 	key: (value: T) => K,
 ): Record<K, T> {
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -15,7 +15,10 @@ export function keyBy<T extends object, K extends number | string>(
 	return map;
 }
 
-export function keyByToMap<T extends object, K>(values: Array<T>, key: (value: T) => K): Map<K, T> {
+export function keyByToMap<T extends object, K>(
+	values: ReadonlyArray<T>,
+	key: (value: T) => K,
+): Map<K, T> {
 	const map = new Map();
 
 	values.forEach((value) => {

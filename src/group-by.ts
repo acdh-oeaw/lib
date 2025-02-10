@@ -1,5 +1,5 @@
 export function groupBy<T extends object, K extends number | string>(
-	values: Array<T>,
+	values: ReadonlyArray<T>,
 	keys: (value: T) => Array<K> | K,
 ): Record<K, Array<T>> {
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
