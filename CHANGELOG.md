@@ -1,5 +1,13 @@
 # @acdh-oeaw/lib
 
+## 0.2.1
+
+### Patch Changes
+
+- [`d4ce59e`](https://github.com/acdh-oeaw/lib/commit/d4ce59e787b67f5257da16133232b2557036b987)
+  Thanks [@stefanprobst](https://github.com/stefanprobst)! - accept readonly arrays as input to
+  key-by and group-by
+
 ## 0.2.0
 
 ### Minor Changes
