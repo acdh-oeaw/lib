@@ -31,7 +31,7 @@ export function groupBy<T extends object, K extends number | string>(
 }
 
 export function groupByToMap<T extends object, K>(
-	values: Array<T>,
+	values: ReadonlyArray<T>,
 	keys: (value: T) => Array<K> | K,
 ): Map<K, Array<T>> {
 	const groups = new Map();
