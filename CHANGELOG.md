@@ -1,5 +1,13 @@
 # @acdh-oeaw/lib
 
+## 0.2.2
+
+### Patch Changes
+
+- [`1685fe0`](https://github.com/acdh-oeaw/lib/commit/1685fe0ff075a65d41779bb09b2dde57d5cc1153)
+  Thanks [@stefanprobst](https://github.com/stefanprobst)! - handle readonly array in
+  group-by-to-map
+
 ## 0.2.1
 
 ### Patch Changes
