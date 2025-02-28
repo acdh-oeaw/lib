@@ -13,9 +13,9 @@
 	"sideEffects": false,
 	"engines": {
 		"node": ">=22",
-		"pnpm": "9.x"
+		"pnpm": "10.x"
 	},
-	"packageManager": "pnpm@9.15.2",
+	"packageManager": "pnpm@10.5.2",
 	"scripts": {
 		"build": "tsup",
 		"changeset:add": "changeset add",
@@ -32,6 +32,9 @@
 		"test": "NODE_OPTIONS=\"--import tsx\" uvu",
 		"types:check": "tsc --noEmit",
 		"validate": "run-p format:check lint:check types:check test"
+	},
+	"dependencies": {
+		"is-network-error": "^1.1.0"
 	},
 	"devDependencies": {
 		"@acdh-oeaw/commitlint-config": "^2.0.0",
@@ -59,6 +62,13 @@
 		"tsx": "^4.19.2",
 		"typescript": "^5.7.2",
 		"uvu": "^0.5.6"
+	},
+	"pnpm": {
+		"onlyBuiltDependencies": [
+			"@parcel/watcher",
+			"esbuild",
+			"simple-git-hooks"
+		]
 	},
 	"commitlint": {
 		"extends": "@acdh-oeaw/commitlint-config"
