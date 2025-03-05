@@ -17,6 +17,7 @@ npm install @acdh-oeaw/lib
 - `create-url`
 - `create-url-search-params`
 - `debounce`
+- `ensureArray`
 - `get`
 - `get-form-data-values`
 - `group-by`
@@ -36,6 +37,7 @@ npm install @acdh-oeaw/lib
 - `pick`
 - `promise`
 - `range`
+- `removeTrailingSlash`
 - `request`
 - `set`
 - `template`
