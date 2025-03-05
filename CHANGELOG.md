@@ -1,5 +1,15 @@
 # @acdh-oeaw/lib
 
+## 0.3.0
+
+### Minor Changes
+
+- [`a7dd21a`](https://github.com/acdh-oeaw/lib/commit/a7dd21ab1f82a91d77b664aef60c5cf391f59a3f)
+  Thanks [@stefanprobst](https://github.com/stefanprobst)! - add ensure-array
+
+- [`a7dd21a`](https://github.com/acdh-oeaw/lib/commit/a7dd21ab1f82a91d77b664aef60c5cf391f59a3f)
+  Thanks [@stefanprobst](https://github.com/stefanprobst)! - add remove-trailing-slash
+
 ## 0.2.2
 
 ### Patch Changes
