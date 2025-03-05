@@ -33,6 +33,9 @@
 		"types:check": "tsc --noEmit",
 		"validate": "run-p format:check lint:check types:check test"
 	},
+	"dependencies": {
+		"is-network-error": "^1.1.0"
+	},
 	"devDependencies": {
 		"@acdh-oeaw/commitlint-config": "^2.0.0",
 		"@acdh-oeaw/eslint-config": "^2.0.7",
