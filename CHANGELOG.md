@@ -1,5 +1,12 @@
 # @acdh-oeaw/lib
 
+## 0.3.1
+
+### Patch Changes
+
+- [`ae12a76`](https://github.com/acdh-oeaw/lib/commit/ae12a7620f36952b8136210ac3d5da27fde6cecc)
+  Thanks [@stefanprobst](https://github.com/stefanprobst)! - add addTrailingSlash
+
 ## 0.3.0
 
 ### Minor Changes
