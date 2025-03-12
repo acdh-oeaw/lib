@@ -1,3 +1,4 @@
+export * from "./add-trailing-slash.js";
 export * from "./assert.js";
 export * from "./capitalize.js";
 export * from "./clamp.js";
