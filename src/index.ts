@@ -9,7 +9,6 @@ export * from "./create-url.js";
 export * from "./create-url-search-params.js";
 export * from "./debounce.js";
 export * from "./ensure-array.js";
-export * from "./error.js";
 export * from "./get.js";
 export * from "./get-form-data-values.js";
 export * from "./group-by.js";
