@@ -1,5 +1,5 @@
 import { HttpError } from "./error.js";
-import { promise } from "./promise.js";
+import { result } from "./result.js";
 import { wait } from "./wait.js";
 
 type Fetch = typeof globalThis.fetch;
@@ -271,7 +271,7 @@ export async function request(input: RequestInfo | URL, config: RequestConfig): 
 		if (retryConfig.shouldRetry(context)) {
 			const delay = retryConfig.delay(context);
 
-			const { error } = await promise(() => {
+			const { error } = await result(() => {
 				return wait(delay, controller.signal);
 			});
 
@@ -283,7 +283,7 @@ export async function request(input: RequestInfo | URL, config: RequestConfig): 
 				// eslint-disable-next-line @typescript-eslint/return-await
 				return request(context.request, { count: count + 1 });
 			} else {
-				context.error = error as Error;
+				context.error = error;
 			}
 		}
 

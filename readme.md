@@ -36,10 +36,10 @@ npm install @acdh-oeaw/lib
 - `noop`
 - `omit`
 - `pick`
-- `promise`
 - `range`
 - `removeTrailingSlash`
 - `request`
+- `result`
 - `set`
 - `template`
 - `times`
