@@ -1,5 +1,13 @@
 # @acdh-oeaw/lib
 
+## 0.3.2
+
+### Patch Changes
+
+- [`450f176`](https://github.com/acdh-oeaw/lib/commit/450f176e689fb8ddc13251b9783d54d47665bb79)
+  Thanks [@stefanprobst](https://github.com/stefanprobst)! - improve type narrowing in promise
+  utility
+
 ## 0.3.1
 
 ### Patch Changes
