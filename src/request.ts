@@ -283,7 +283,7 @@ export async function request(input: RequestInfo | URL, config: RequestConfig): 
 				// eslint-disable-next-line @typescript-eslint/return-await
 				return request(context.request, { count: count + 1 });
 			} else {
-				context.error = error as Error;
+				context.error = error;
 			}
 		}
 
