@@ -11,4 +11,5 @@ export default defineConfig({
 	minify: false,
 	sourcemap: true,
 	treeshake: true,
+	unbundle: true,
 });
