@@ -31,6 +31,7 @@ export function debounce<TParams extends Array<unknown>, TThisContext>(
 		context = this;
 		args = params;
 
+		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		if (timer == null) {
 			timer = setTimeout(invoke, delay);
 		}

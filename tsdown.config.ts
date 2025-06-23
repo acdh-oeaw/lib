@@ -9,4 +9,5 @@ export default defineConfig({
 	sourcemap: true,
 	treeshake: true,
 	unbundle: true,
+	tsconfig: "./tsconfig.build.json",
 });

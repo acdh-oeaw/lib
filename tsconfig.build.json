@@ -2,7 +2,9 @@
 	"$schema": "https://json.schemastore.org/tsconfig",
 	"extends": "@acdh-oeaw/tsconfig-lib",
 	"compilerOptions": {
-		"declaration": false
+		"allowJs": false,
+		"checkJs": false,
+		"isolatedDeclarations": true
 	},
 	"exclude": ["dist", "node_modules"]
 }
