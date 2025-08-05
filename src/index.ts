@@ -31,6 +31,7 @@ export * from "./promise.js";
 export * from "./range.js";
 export * from "./remove-trailing-slash.js";
 export * from "./request.js";
+export * from "./result.ts";
 export * from "./set.js";
 export * from "./template.js";
 export * from "./times.js";
