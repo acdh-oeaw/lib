@@ -40,6 +40,7 @@ npm install @acdh-oeaw/lib
 - `range`
 - `removeTrailingSlash`
 - `request`
+- `Result`, `err`, `ok`, `isErr`, `isOk`
 - `set`
 - `template`
 - `times`
