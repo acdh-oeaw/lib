@@ -1,5 +1,19 @@
 # @acdh-oeaw/lib
 
+## 0.3.3
+
+### Patch Changes
+
+- [`0e325c1`](https://github.com/acdh-oeaw/lib/commit/0e325c1f2e714789b1455949fb73f6bdafb03c8a)
+  Thanks [@stefanprobst](https://github.com/stefanprobst)! - enable tsdown unbundle option
+
+- [#23](https://github.com/acdh-oeaw/lib/pull/23)
+  [`946dea7`](https://github.com/acdh-oeaw/lib/commit/946dea72ababb48797a863226b633bc76eeefe15)
+  Thanks [@stefanprobst](https://github.com/stefanprobst)! - add result type
+
+- [`6b590a3`](https://github.com/acdh-oeaw/lib/commit/6b590a3ff9cfdee2c7c79d58f2f6f57bb33242ab)
+  Thanks [@stefanprobst](https://github.com/stefanprobst)! - replace tsup with tsdown
+
 ## 0.3.2
 
 ### Patch Changes
