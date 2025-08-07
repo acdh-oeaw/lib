@@ -1,5 +1,13 @@
 # @acdh-oeaw/lib
 
+## 0.3.4
+
+### Patch Changes
+
+- [#24](https://github.com/acdh-oeaw/lib/pull/24)
+  [`86a8467`](https://github.com/acdh-oeaw/lib/commit/86a8467d77bb334308e48a5c6f35614f669147f1)
+  Thanks [@stefanprobst](https://github.com/stefanprobst)! - update log.info icon
+
 ## 0.3.3
 
 ### Patch Changes
