@@ -5,7 +5,7 @@ export const log = {
 		console.log(...messages);
 	},
 	info(...messages: Array<unknown>): void {
-		console.info("➡️ ", ...messages);
+		console.info("ℹ️ ", ...messages);
 	},
 	success(...messages: Array<unknown>): void {
 		console.info("✅ ", ...messages);
