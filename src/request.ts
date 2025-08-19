@@ -252,12 +252,14 @@ export async function request(input: RequestInfo | URL, config: RequestConfig): 
 			contentType === "json" &&
 			(context.response.status === 204 || context.response.headers.get("content-length") === "0")
 		) {
+			await context.response.body?.cancel();
 			return "";
 		} else if (contentType === "raw") {
 			return context.response;
 		} else if (contentType === "stream") {
 			return context.response.body;
 		} else if (contentType === "void") {
+			await context.response.body?.cancel();
 			return null;
 		}
 
