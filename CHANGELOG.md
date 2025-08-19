@@ -1,5 +1,14 @@
 # @acdh-oeaw/lib
 
+## 0.3.5
+
+### Patch Changes
+
+- [#27](https://github.com/acdh-oeaw/lib/pull/27)
+  [`41fe538`](https://github.com/acdh-oeaw/lib/commit/41fe538db3e969166e7a09112eeca8fffe7b2694)
+  Thanks [@stefanprobst](https://github.com/stefanprobst)! - ensure readable stream is closed on
+  empty json and void return types
+
 ## 0.3.4
 
 ### Patch Changes
