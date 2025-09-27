@@ -2,6 +2,9 @@
 	"name": "@acdh-oeaw/lib",
 	"version": "0.3.5",
 	"license": "MIT",
+	"repository": {
+		"url": "https://github.com/acdh-oeaw/lib"
+	},
 	"type": "module",
 	"main": "./dist/index.js",
 	"exports": {
