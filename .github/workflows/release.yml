@@ -36,6 +36,10 @@ jobs:
           # https://docs.github.com/en/actions/publishing-packages/publishing-nodejs-packages#publishing-packages-to-the-npm-registry
           registry-url: "https://registry.npmjs.org"
 
+      # Ensure `npm` 11.5.1 or later is installed (which is needed for trusted publishing).
+      - name: Update npm
+        run: npm install -g npm@latest
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
