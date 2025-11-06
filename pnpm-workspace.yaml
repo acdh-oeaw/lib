@@ -1,0 +1,12 @@
+onlyBuiltDependencies:
+  - '@parcel/watcher'
+  - esbuild
+  - node
+  - simple-git-hooks
+  - unrs-resolver
+
+# https://pnpm.io/settings#shellemulator
+shellEmulator: true
+
+# https://pnpm.io/settings#strictdepbuilds
+strictDepBuilds: true

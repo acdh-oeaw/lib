@@ -1,6 +1,6 @@
 import base from "@acdh-oeaw/eslint-config";
 import node from "@acdh-oeaw/eslint-config-node";
+import { defineConfig } from "eslint/config";
 import gitignore from "eslint-config-flat-gitignore";
-import { config } from "typescript-eslint";
 
-export default config([gitignore(), ...base, ...node]);
+export default defineConfig(gitignore({ strict: false }), base, node);
