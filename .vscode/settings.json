@@ -7,10 +7,13 @@
 	"editor.rulers": [100],
 	"eslint.enable": true,
 	"eslint.validate": ["javascript", "typescript"],
-	"files.eol": "\n",
+	"oxc.fmt.experimental": true,
 	"terminal.integrated.enablePersistentSessions": false,
 	"typescript.enablePromptUseWorkspaceTsdk": true,
 	"typescript.tsdk": "node_modules/typescript/lib",
+	"[javascript][typescript]": {
+		"editor.defaultFormatter": "oxc.oxc-vscode"
+	},
 	"[markdown]": {
 		"editor.wordWrap": "on"
 	}
