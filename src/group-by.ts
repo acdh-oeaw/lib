@@ -2,8 +2,7 @@ export function groupBy<T extends object, K extends number | string>(
 	values: ReadonlyArray<T>,
 	keys: (value: T) => Array<K> | K,
 ): Record<K, Array<T>> {
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-	const groups = Object.create(null);
+	const groups = {} as Record<K, Array<T>>;
 
 	function set(groups: Record<K, Array<T>>, id: K, value: T) {
 		if (!Object.prototype.hasOwnProperty.call(groups, id)) {
@@ -17,16 +16,13 @@ export function groupBy<T extends object, K extends number | string>(
 		const ids = keys(value);
 		if (Array.isArray(ids)) {
 			ids.forEach((id) => {
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 				set(groups, id, value);
 			});
 		} else {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 			set(groups, ids, value);
 		}
 	});
 
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 	return groups;
 }
 
@@ -34,7 +30,7 @@ export function groupByToMap<T extends object, K>(
 	values: ReadonlyArray<T>,
 	keys: (value: T) => Array<K> | K,
 ): Map<K, Array<T>> {
-	const groups = new Map();
+	const groups = new Map<K, Array<T>>();
 
 	function set(groups: Map<K, Array<T>>, id: K, value: T) {
 		if (!groups.has(id)) {
@@ -48,15 +44,12 @@ export function groupByToMap<T extends object, K>(
 		const ids = keys(value);
 		if (Array.isArray(ids)) {
 			ids.forEach((id) => {
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 				set(groups, id, value);
 			});
 		} else {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 			set(groups, ids, value);
 		}
 	});
 
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 	return groups;
 }
