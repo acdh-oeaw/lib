@@ -13,17 +13,19 @@ test("should group by value", () => {
 		{ id: "4", category: "a" },
 	];
 
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-	const expected = Object.assign(Object.create(null), {
-		a: [
-			{ id: "1", category: "a" },
-			{ id: "4", category: "a" },
-		],
-		b: [
-			{ id: "2", category: "b" },
-			{ id: "3", category: "b" },
-		],
-	});
+	const expected = Object.assign(
+		{},
+		{
+			a: [
+				{ id: "1", category: "a" },
+				{ id: "4", category: "a" },
+			],
+			b: [
+				{ id: "2", category: "b" },
+				{ id: "3", category: "b" },
+			],
+		},
+	);
 
 	assert.equal(
 		groupBy(values, (value) => {
@@ -74,19 +76,21 @@ test("should group by multiple values", () => {
 		{ id: "4", categories: ["a"] },
 	];
 
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-	const expected = Object.assign(Object.create(null), {
-		a: [
-			{ id: "1", categories: ["a", "c"] },
-			{ id: "3", categories: ["b", "a"] },
-			{ id: "4", categories: ["a"] },
-		],
-		b: [
-			{ id: "2", categories: ["b"] },
-			{ id: "3", categories: ["b", "a"] },
-		],
-		c: [{ id: "1", categories: ["a", "c"] }],
-	});
+	const expected = Object.assign(
+		{},
+		{
+			a: [
+				{ id: "1", categories: ["a", "c"] },
+				{ id: "3", categories: ["b", "a"] },
+				{ id: "4", categories: ["a"] },
+			],
+			b: [
+				{ id: "2", categories: ["b"] },
+				{ id: "3", categories: ["b", "a"] },
+			],
+			c: [{ id: "1", categories: ["a", "c"] }],
+		},
+	);
 
 	assert.equal(
 		groupBy(values, (value) => {
