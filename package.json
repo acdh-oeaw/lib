@@ -6,9 +6,9 @@
 		"url": "https://github.com/acdh-oeaw/lib"
 	},
 	"type": "module",
-	"main": "./dist/index.js",
+	"main": "./dist/index.mjs",
 	"exports": {
-		".": "./dist/index.js"
+		".": "./dist/index.mjs"
 	},
 	"files": [
 		"dist"
