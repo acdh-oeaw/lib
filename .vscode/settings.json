@@ -2,18 +2,14 @@
 	"editor.codeActionsOnSave": {
 		"source.fixAll": "explicit"
 	},
-	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"editor.defaultFormatter": "oxc.oxc-vscode",
 	"editor.formatOnSave": true,
 	"editor.rulers": [100],
 	"eslint.enable": true,
 	"eslint.validate": ["javascript", "typescript"],
-	"oxc.fmt.experimental": true,
 	"terminal.integrated.enablePersistentSessions": false,
 	"typescript.enablePromptUseWorkspaceTsdk": true,
 	"typescript.tsdk": "node_modules/typescript/lib",
-	"[javascript][typescript]": {
-		"editor.defaultFormatter": "oxc.oxc-vscode"
-	},
 	"[markdown]": {
 		"editor.wordWrap": "on"
 	}
