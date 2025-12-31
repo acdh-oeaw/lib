@@ -1,5 +1,23 @@
 # @acdh-oeaw/lib
 
+## 0.3.7
+
+### Patch Changes
+
+- [#38](https://github.com/acdh-oeaw/lib/pull/38)
+  [`210e8b3`](https://github.com/acdh-oeaw/lib/commit/210e8b31363da5752b4a6f1e2fce5c9edd130693)
+  Thanks [@stefanprobst](https://github.com/stefanprobst)! - use .mjs for export map because of
+  tsdown
+
+## 0.3.6
+
+### Patch Changes
+
+- [#36](https://github.com/acdh-oeaw/lib/pull/36)
+  [`15a57bf`](https://github.com/acdh-oeaw/lib/commit/15a57bf088ee85bbf2351f5d0858ab190dfa640f)
+  Thanks [@stefanprobst](https://github.com/stefanprobst)! - use regular pojo instead of
+  null-prototype objects
+
 ## 0.3.5
 
 ### Patch Changes
