@@ -50,7 +50,6 @@ test("should narrow return type based on responseType parameter", async (context
 	expectTypeOf(await request(url, { responseType: "raw" })).toEqualTypeOf<Response>();
 	expectTypeOf(
 		await request(url, { responseType: "stream" }),
-		// eslint-disable-next-line n/no-unsupported-features/node-builtins
 	).toEqualTypeOf<ReadableStream<Uint8Array> | null>();
 	expectTypeOf(await request(url, { responseType: "text" })).toEqualTypeOf<string>();
 	expectTypeOf(await request(url, { responseType: "void" })).toEqualTypeOf<null>();
