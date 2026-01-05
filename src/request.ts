@@ -19,7 +19,7 @@ interface GetReturnType {
 	formData: FormData;
 	json: unknown;
 	raw: Response;
-	stream: ReadableStream<Uint8Array>;
+	stream: ReadableStream<Uint8Array> | null;
 	text: string;
 	void: null;
 }
@@ -128,7 +128,7 @@ export async function request<TResponseType extends ResponseType>(
 				(response.status === 204 || response.headers.get("content-length") === "0")
 			) {
 				await response.body?.cancel();
-				const data = "" as GetReturnType[TResponseType];
+				const data = null as GetReturnType[TResponseType];
 				return ok({ data, headers: response.headers });
 			}
 
