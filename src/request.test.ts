@@ -115,4 +115,25 @@ test("should narrow return type based on responseType parameter", async (context
 	expectTypeOf(ignore.value.data).toEqualTypeOf<null>();
 });
 
+test("should allow passing explicit return type for json response", async (context) => {
+	context.server = await listen((request, response) => {
+		response.end();
+	});
+	const url = createUrl({ baseUrl: context.server.url });
+
+	interface Data {
+		key: string;
+	}
+
+	const json = await request<Data>(url, { responseType: "json" });
+	assert.ok(json.error == null);
+	expectTypeOf(json.value.data).toEqualTypeOf<Data>();
+
+	// @ts-expect-error Not a json response.
+	const text = await request<Data>(url, { responseType: "text" });
+	assert.ok(text.error == null);
+	// @ts-expect-error Not a json response.
+	expectTypeOf(text.value.data).toEqualTypeOf<Data>();
+});
+
 test.run();

@@ -27,6 +27,8 @@ npm install @acdh-oeaw/lib
 - `isNonNullable`
 - `isNonemptyArray`
 - `isNonemptyString`
+- `isPlainObject`
+- `isThenable`
 - `isUrl`
 - `isoDate`
 - `keyBy`
@@ -40,7 +42,7 @@ npm install @acdh-oeaw/lib
 - `range`
 - `removeTrailingSlash`
 - `request`
-- `Result`, `err`, `ok`, `isErr`, `isOk`
+- `Result`, `err`, `ok`, `isErr`, `isOk`, `result`
 - `set`
 - `template`
 - `times`
