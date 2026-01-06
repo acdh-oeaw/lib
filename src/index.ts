@@ -18,6 +18,7 @@ export * from "./includes.js";
 export * from "./is-non-nullable.js";
 export * from "./is-nonempty-array.js";
 export * from "./is-nonempty-string.js";
+export * from "./is-thenable.js";
 export * from "./is-url.js";
 export * from "./iso-date.js";
 export * from "./key-by.js";
