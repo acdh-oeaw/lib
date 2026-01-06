@@ -1,7 +1,7 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
 
-import { isOk, result } from "./result.js";
+import { isOk, result } from "./result.ts";
 
 const test = suite("result");
 

@@ -1,7 +1,7 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
 
-import { keyBy, keyByToMap } from "./key-by.js";
+import { keyBy, keyByToMap } from "./key-by.ts";
 
 const test = suite("keyBy");
 

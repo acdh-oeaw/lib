@@ -1,7 +1,7 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
 
-import { isThenable } from "./is-thenable.js";
+import { isThenable } from "./is-thenable.ts";
 
 const test = suite("isThenable");
 

@@ -1,7 +1,7 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
 
-import { clamp } from "./clamp.js";
+import { clamp } from "./clamp.ts";
 
 const test = suite("clamp");
 

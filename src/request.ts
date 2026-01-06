@@ -1,7 +1,7 @@
 import isNetworkError from "is-network-error";
 
-import { err, ok, type Result } from "./result.js";
-import { wait } from "./wait.js";
+import { err, ok, type Result } from "./result.ts";
+import { wait } from "./wait.ts";
 
 type ResponseType =
 	| "arrayBuffer"

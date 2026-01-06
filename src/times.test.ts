@@ -1,7 +1,7 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
 
-import { times } from "./times.js";
+import { times } from "./times.ts";
 
 const test = suite("times");
 

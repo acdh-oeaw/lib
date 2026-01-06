@@ -1,7 +1,7 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
 
-import { createHeaders } from "./create-headers.js";
+import { createHeaders } from "./create-headers.ts";
 
 const test = suite("createHeaders");
 

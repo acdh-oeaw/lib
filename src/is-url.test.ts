@@ -1,7 +1,7 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
 
-import { isUrl } from "./is-url.js";
+import { isUrl } from "./is-url.ts";
 
 const test = suite("isUrl");
 

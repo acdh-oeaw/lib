@@ -1,7 +1,7 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
 
-import { getFormDataValues } from "./get-form-data-values.js";
+import { getFormDataValues } from "./get-form-data-values.ts";
 
 const test = suite("getFormDataValues");
 

@@ -2,8 +2,8 @@ import { install, type InstalledClock } from "@sinonjs/fake-timers";
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
 
-import { createTimer } from "./create-timer.js";
-import { noop } from "./noop.js";
+import { createTimer } from "./create-timer.ts";
+import { noop } from "./noop.ts";
 
 interface Context {
 	clock: InstalledClock;

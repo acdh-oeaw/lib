@@ -1,4 +1,4 @@
-import { set } from "./set.js";
+import { set } from "./set.ts";
 
 export function getFormDataValues(formData: FormData): unknown {
 	const data = {};

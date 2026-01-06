@@ -1,7 +1,7 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
 
-import { range } from "./range.js";
+import { range } from "./range.ts";
 
 const test = suite("range");
 

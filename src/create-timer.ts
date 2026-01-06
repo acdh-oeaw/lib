@@ -1,5 +1,5 @@
-import { assert } from "./assert.js";
-import type { Fn, TimerId } from "./types.js";
+import { assert } from "./assert.ts";
+import type { Fn, TimerId } from "./types.ts";
 
 export function createTimer(
 	callback: Fn,

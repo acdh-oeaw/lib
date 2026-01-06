@@ -1,8 +1,8 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
 
-import { createUrlSearchParams } from "./create-url-search-params.js";
-import { createUrl } from "./create-url.js";
+import { createUrlSearchParams } from "./create-url-search-params.ts";
+import { createUrl } from "./create-url.ts";
 
 const test = suite("createUrl");
 

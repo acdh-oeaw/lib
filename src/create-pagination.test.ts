@@ -1,8 +1,8 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
 
-import { createPagination, type PaginationItem } from "./create-pagination.js";
-import { range } from "./range.js";
+import { createPagination, type PaginationItem } from "./create-pagination.ts";
+import { range } from "./range.ts";
 
 const test = suite("createPagination");
 

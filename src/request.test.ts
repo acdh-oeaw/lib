@@ -3,8 +3,8 @@ import { listen, type Listener } from "listhen";
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
 
-import { createUrl } from "./create-url.js";
-import { HttpError, request } from "./request.js";
+import { createUrl } from "./create-url.ts";
+import { HttpError, request } from "./request.ts";
 
 interface Context {
 	server?: Listener;
@@ -68,7 +68,7 @@ test("should return http error", async (context) => {
 
 test("should narrow return type based on responseType parameter", async (context) => {
 	context.server = await listen((request, response) => {
-		if (request.headers.accept === "multipart/form-data") {
+		if (request.headers.accept === "application/x-www-form-urlencoded") {
 			const data = new URLSearchParams().toString();
 			response.setHeader("content-type", "application/x-www-form-urlencoded");
 			response.setHeader("content-length", Buffer.byteLength(data));
@@ -87,7 +87,10 @@ test("should narrow return type based on responseType parameter", async (context
 	assert.ok(blob.error == null);
 	expectTypeOf(blob.value.data).toEqualTypeOf<Blob>();
 
-	const formData = await request(url, { responseType: "formData" });
+	const formData = await request(url, {
+		headers: { accept: "application/x-www-form-urlencoded" },
+		responseType: "formData",
+	});
 	assert.ok(formData.error == null);
 	expectTypeOf(formData.value.data).toEqualTypeOf<FormData>();
 

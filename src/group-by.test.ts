@@ -1,7 +1,7 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
 
-import { groupBy, groupByToMap } from "./group-by.js";
+import { groupBy, groupByToMap } from "./group-by.ts";
 
 const test = suite("groupBy");
 

@@ -1,7 +1,7 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
 
-import { omit } from "./omit.js";
+import { omit } from "./omit.ts";
 
 const test = suite("omit");
 
