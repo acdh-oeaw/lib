@@ -1,5 +1,15 @@
 # @acdh-oeaw/lib
 
+## 1.0.0
+
+### Major Changes
+
+- [#40](https://github.com/acdh-oeaw/lib/pull/40) [`f441c7d`](https://github.com/acdh-oeaw/lib/commit/f441c7de6f06f3d791d2aafba1a7c62c53adb19d) Thanks [@stefanprobst](https://github.com/stefanprobst)! - return result type from request, improve errors
+
+### Minor Changes
+
+- [#41](https://github.com/acdh-oeaw/lib/pull/41) [`363c3be`](https://github.com/acdh-oeaw/lib/commit/363c3be15fcff9641d50db26361e554e739bd953) Thanks [@stefanprobst](https://github.com/stefanprobst)! - add result utility:
+
 ## 0.3.7
 
 ### Patch Changes
