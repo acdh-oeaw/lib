@@ -17,6 +17,7 @@ export * from "./includes.ts";
 export * from "./is-non-nullable.ts";
 export * from "./is-nonempty-array.ts";
 export * from "./is-nonempty-string.ts";
+export * from "./is-plain-object.ts";
 export * from "./is-thenable.ts";
 export * from "./is-url.ts";
 export * from "./iso-date.ts";
