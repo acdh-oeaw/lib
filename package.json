@@ -30,7 +30,7 @@
 		"changeset:add": "changeset add",
 		"changeset:status": "changeset status --verbose",
 		"ci:release": "changeset publish",
-		"ci:version": "changeset version && oxfmt \"**/CHANGELOG.md\"",
+		"ci:version": "changeset version && oxfmt --write CHANGELOG.md",
 		"format:check": "oxfmt --check",
 		"format:fix": "oxfmt --write",
 		"lint:check": "eslint . --cache",
