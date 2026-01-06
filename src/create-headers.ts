@@ -1,4 +1,4 @@
-import type { Nullable, Primitive } from "./types.js";
+import type { Nullable, Primitive } from "./types.ts";
 
 export type CreateHeadersParams =
 	| Array<[string, Nullable<Primitive>]>

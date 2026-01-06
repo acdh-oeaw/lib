@@ -1,4 +1,4 @@
-import { isThenable } from "./is-thenable.js";
+import { isThenable } from "./is-thenable.ts";
 
 export interface Ok<T> {
 	value: T;

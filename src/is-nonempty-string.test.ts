@@ -1,7 +1,7 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
 
-import { isNonEmptyString } from "./is-nonempty-string.js";
+import { isNonEmptyString } from "./is-nonempty-string.ts";
 
 const test = suite("isNonEmptyString");
 

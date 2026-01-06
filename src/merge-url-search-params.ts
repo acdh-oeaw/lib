@@ -1,7 +1,7 @@
 import {
 	createUrlSearchParams,
 	type CreateUrlSearchParamsParams,
-} from "./create-url-search-params.js";
+} from "./create-url-search-params.ts";
 
 export function mergeUrlSearchParams(
 	a: CreateUrlSearchParamsParams,

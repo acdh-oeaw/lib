@@ -1,7 +1,7 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
 
-import { isNonEmptyArray } from "./is-nonempty-array.js";
+import { isNonEmptyArray } from "./is-nonempty-array.ts";
 
 const test = suite("isNonEmptyArray");
 

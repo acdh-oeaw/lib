@@ -1,7 +1,7 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
 
-import { removeTrailingSlash } from "./remove-trailing-slash.js";
+import { removeTrailingSlash } from "./remove-trailing-slash.ts";
 
 const test = suite("get");
 

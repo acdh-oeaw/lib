@@ -1,4 +1,4 @@
-import { createHeaders, type CreateHeadersParams } from "./create-headers.js";
+import { createHeaders, type CreateHeadersParams } from "./create-headers.ts";
 
 export function mergeHeaders(a: CreateHeadersParams, b: CreateHeadersParams): Headers {
 	const source = createHeaders(b);

@@ -1,7 +1,7 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
 
-import { unique } from "./unique.js";
+import { unique } from "./unique.ts";
 
 const test = suite("unique");
 

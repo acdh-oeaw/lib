@@ -1,7 +1,7 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
 
-import { ensureArray } from "./ensure-array.js";
+import { ensureArray } from "./ensure-array.ts";
 
 const test = suite("get");
 

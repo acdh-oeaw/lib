@@ -2,7 +2,7 @@ import { install, type InstalledClock } from "@sinonjs/fake-timers";
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
 
-import { wait } from "./wait.js";
+import { wait } from "./wait.ts";
 
 interface Context {
 	clock: InstalledClock;

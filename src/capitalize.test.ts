@@ -1,7 +1,7 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
 
-import { capitalize } from "./capitalize.js";
+import { capitalize } from "./capitalize.ts";
 
 const test = suite("capitalize");
 

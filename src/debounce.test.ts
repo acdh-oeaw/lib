@@ -2,7 +2,7 @@ import { install, type InstalledClock } from "@sinonjs/fake-timers";
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
 
-import { debounce } from "./debounce.js";
+import { debounce } from "./debounce.ts";
 
 interface Context {
 	clock: InstalledClock;

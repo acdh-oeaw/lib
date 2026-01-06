@@ -1,6 +1,6 @@
 import { suite } from "uvu";
 
-import { includes } from "./includes.js";
+import { includes } from "./includes.ts";
 
 const test = suite("includes");
 

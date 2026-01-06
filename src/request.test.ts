@@ -3,8 +3,8 @@ import { listen, type Listener } from "listhen";
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
 
-import { createUrl } from "./create-url.js";
-import { HttpError, request } from "./request.js";
+import { createUrl } from "./create-url.ts";
+import { HttpError, request } from "./request.ts";
 
 interface Context {
 	server?: Listener;

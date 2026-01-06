@@ -1,7 +1,7 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
 
-import { isoDate } from "./iso-date.js";
+import { isoDate } from "./iso-date.ts";
 
 const test = suite("isoDate");
 

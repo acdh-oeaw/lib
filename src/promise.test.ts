@@ -1,7 +1,7 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
 
-import { promise } from "./promise.js";
+import { promise } from "./promise.ts";
 
 const test = suite("awaited");
 

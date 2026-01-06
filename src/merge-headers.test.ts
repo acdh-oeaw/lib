@@ -1,7 +1,7 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
 
-import { mergeHeaders } from "./merge-headers.js";
+import { mergeHeaders } from "./merge-headers.ts";
 
 const test = suite("mergeHeaders");
 

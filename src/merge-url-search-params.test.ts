@@ -1,7 +1,7 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
 
-import { mergeUrlSearchParams } from "./merge-url-search-params.js";
+import { mergeUrlSearchParams } from "./merge-url-search-params.ts";
 
 const test = suite("mergeUrlSearchParams");
 

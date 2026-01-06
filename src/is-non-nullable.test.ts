@@ -1,7 +1,7 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
 
-import { isNonNullable } from "./is-non-nullable.js";
+import { isNonNullable } from "./is-non-nullable.ts";
 
 const test = suite("isNonNullable");
 

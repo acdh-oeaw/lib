@@ -1,4 +1,4 @@
-import { get } from "./get.js";
+import { get } from "./get.ts";
 
 const regex = /\{(.+?)\}/g;
 

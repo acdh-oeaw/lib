@@ -1,7 +1,7 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
 
-import { set } from "./set.js";
+import { set } from "./set.ts";
 
 const test = suite("set");
 

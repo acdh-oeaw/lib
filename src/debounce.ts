@@ -1,5 +1,5 @@
-import { assert } from "./assert.js";
-import type { Fn, TimerId } from "./types.js";
+import { assert } from "./assert.ts";
+import type { Fn, TimerId } from "./types.ts";
 
 export function debounce<TParams extends Array<unknown>, TThisContext>(
 	callback: Fn<TParams, void, TThisContext>,

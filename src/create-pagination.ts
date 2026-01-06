@@ -1,4 +1,4 @@
-import { range } from "./range.js";
+import { range } from "./range.ts";
 
 export interface PaginationParams {
 	page: number;
