@@ -1,17 +1,7 @@
-import { HttpError } from "./error.js";
-import { promise } from "./promise.js";
+import isNetworkError from "is-network-error";
+
+import { err, ok, type Result } from "./result.js";
 import { wait } from "./wait.js";
-
-type Fetch = typeof globalThis.fetch;
-
-interface Hooks {
-	beforeRequest?: (context: RequestContext) => Promise<void> | void;
-	beforeRetry?: (context: RequestContext) => Promise<void> | void;
-	beforeError?: (context: RequestContext) => Promise<void> | void;
-	afterResponse?: (context: RequestContext) => Promise<void> | void;
-}
-
-type HttpMethod = "delete" | "get" | "head" | "options" | "patch" | "post" | "put" | "trace";
 
 type ResponseType =
 	| "arrayBuffer"
@@ -23,280 +13,377 @@ type ResponseType =
 	| "text"
 	| "void";
 
-interface RetryConfig {
-	delay?: (context: RequestContext) => number;
-	shouldRetry?: (context: RequestContext) => boolean;
-}
-
-const retryMethods = new Set(["delete", "get", "head", "options", "put", "trace"]);
-
-const retryStatusCodes = new Set([408, 409, 413, 425, 429, 500, 502, 503, 504]);
-
-function shouldRetry(context: RequestContext) {
-	if (context.count >= 3) {
-		return false;
-	}
-
-	if (context.response == null || !(context.error instanceof HttpError)) {
-		return false;
-	}
-
-	if (!retryMethods.has(context.request.method)) {
-		return false;
-	}
-
-	if (!retryStatusCodes.has(context.response.status)) {
-		return false;
-	}
-
-	const header = context.response.headers.get("retry-after");
-
-	if (context.response.status === 413 && header == null) {
-		return false;
-	}
-
-	if (header != null) {
-		const delay = Number(header);
-
-		if (delay < 1 || delay > 10_000) {
-			return false;
-		}
-	}
-
-	return true;
-}
-
-function delay(context: RequestContext) {
-	const header = context.response?.headers.get("retry-after");
-
-	if (header != null) {
-		return Number(header);
-	}
-
-	return 250;
-}
-
-const defaultRetryConfig: Required<RetryConfig> = {
-	delay,
-	shouldRetry,
-};
-
-const contentTypes = {
-	json: new Set(["application/json", "application/ld+json"]),
-	text: new Set([
-		"application/html",
-		"application/xhtml+xml",
-		"application/xml",
-		"image/svg+xml",
-		"text/html",
-		"text/plain",
-		"text/xml",
-	]),
-};
-
-function getContentType(context: RequestContext): ResponseType {
-	const header = context.response?.headers.get("content-type")?.split(";", 1).at(0);
-
-	if (header == null) {
-		return "void";
-	}
-
-	if (contentTypes.json.has(header)) {
-		return "json";
-	}
-
-	if (contentTypes.text.has(header)) {
-		return "text";
-	}
-
-	return "raw";
-}
-
-interface RequestContext {
-	count: number;
-	fetch: Fetch;
-	request: Request;
-	response: Response | null;
-	error: Error | null;
-}
-
-export interface RequestConfig<TResponseType extends ResponseType = ResponseType>
-	extends Omit<RequestInit, "body"> {
-	body?: Record<string, unknown> | RequestInit["body"];
-	/** @internal */
-	count?: number;
-	fetch?: Fetch;
-	hooks?: Hooks;
-	method?: HttpMethod;
-	responseType?: TResponseType | ((context: RequestContext) => TResponseType);
-	retries?: RetryConfig;
-	/** @default 10_000 */
-	timeout?: number | false;
-}
-
-interface GetReturnType<TData = unknown> {
+interface GetReturnType {
 	arrayBuffer: ArrayBuffer;
 	blob: Blob;
 	formData: FormData;
-	json: TData;
+	json: unknown;
 	raw: Response;
-	// eslint-disable-next-line n/no-unsupported-features/node-builtins
 	stream: ReadableStream<Uint8Array> | null;
 	text: string;
 	void: null;
 }
 
-export async function request<TData, TResponseType extends "json" = "json">(
-	input: RequestInfo | URL,
-	config: RequestConfig<TResponseType>,
-): Promise<GetReturnType<TData>[TResponseType]>;
+type HttpMethod = "delete" | "get" | "head" | "options" | "patch" | "post" | "put" | "trace";
 
-export async function request<TData = unknown, TResponseType extends ResponseType = ResponseType>(
-	input: RequestInfo | URL,
-	config: RequestConfig<TResponseType>,
-): Promise<GetReturnType<TData>[TResponseType]>;
+export interface RequestOptions<TResponseType extends ResponseType> extends RequestInit {
+	fetch?: typeof globalThis.fetch;
+	json?: unknown;
+	method?: HttpMethod;
+	responseType: TResponseType;
+	/**
+	 * @default 0
+	 */
+	retries?: number;
+	/**
+	 * Timeout in milliseconds.
+	 *
+	 * @default 10_000
+	 */
+	timeout?: number;
+}
 
-export async function request(input: RequestInfo | URL, config: RequestConfig): Promise<unknown> {
+export type RequestResult<TResponseType extends ResponseType> = Result<
+	{ data: GetReturnType[TResponseType]; headers: Headers },
+	AbortError | HttpError | NetworkError | TimeoutError
+>;
+
+export async function request<TResponseType extends ResponseType>(
+	url: URL,
+	options: RequestOptions<TResponseType>,
+): Promise<RequestResult<TResponseType>> {
 	const {
-		count = 0,
-		fetch = globalThis.fetch.bind(globalThis),
-		hooks,
-		responseType = getContentType,
-		retries,
+		body: _body,
+		fetch = globalThis.fetch,
+		headers: _headers,
+		json,
+		method: _method,
+		responseType,
+		retries = 0,
+		signal: _signal,
 		timeout = 10_000,
-		...options
-	} = config;
+		...fetchOptions
+	} = options;
 
-	const controller = new AbortController();
+	const method = _method != null ? _method.toUpperCase() : "GET";
 
-	if (options.signal != null) {
-		const signal = options.signal;
+	const headers = new Headers(_headers);
 
-		if (signal.aborted) {
-			controller.abort(signal.reason);
-		} else {
-			// TODO: remove event listener
-			signal.addEventListener(
-				"abort",
-				() => {
-					controller.abort(signal.reason);
-				},
-				{ once: true },
-			);
-		}
-	}
-
-	options.signal = controller.signal;
-
-	const timer =
-		timeout !== false
-			? setTimeout(() => {
-					const reason = new DOMException("TimeoutError", "TimeoutError");
-					controller.abort(reason);
-				}, timeout)
-			: null;
-
-	// TODO: Need to merge headers when `input` is instanceof `Request`.
-	options.headers = new Headers(options.headers);
-
-	if (!options.headers.has("accept")) {
+	if (!headers.has("accept")) {
 		if (responseType === "json") {
-			options.headers.set("accept", "application/json");
+			headers.set("accept", "application/json");
 		} else if (responseType === "text") {
-			options.headers.set("accept", "text/*");
-		} else if (responseType === "formData") {
-			options.headers.set("accept", "multipart/form-data");
+			headers.set("accept", "text/plain");
 		} else {
-			options.headers.set("accept", "*/*");
+			headers.set("accept", "*/*");
 		}
 	}
 
-	if (options.body !== null && typeof options.body === "object") {
-		if (options.body.constructor.name === "Object") {
-			options.body = JSON.stringify(options.body);
+	let body = _body;
 
-			if (!options.headers.has("content-type")) {
-				options.headers.set("content-type", "application/json");
+	if (body === undefined && json !== undefined) {
+		body = JSON.stringify(json);
+		if (!headers.has("content-type")) {
+			headers.set("content-type", "application/json");
+		}
+	}
+
+	body ??= null;
+
+	let attempts = 0;
+
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+	while (true) {
+		const timeoutSignal = AbortSignal.timeout(timeout);
+
+		const signal = _signal ? AbortSignal.any([_signal, timeoutSignal]) : timeoutSignal;
+
+		const request = new Request(url, { ...fetchOptions, body, headers, method, signal });
+
+		try {
+			const response = await fetch(request);
+
+			if (!response.ok) {
+				throw new HttpError(request, response);
 			}
-		} else if (options.body instanceof FormData || options.body instanceof URLSearchParams) {
-			options.headers.delete("content-type");
-		}
-	}
 
-	const context: RequestContext = {
-		count,
-		fetch,
-		request: new Request(input, options as RequestInit),
-		response: null,
-		error: null,
-	};
+			if (responseType === "raw") {
+				const data = response as GetReturnType[TResponseType];
+				return ok({ data, headers: response.headers });
+			}
 
-	if (hooks?.beforeRequest != null) {
-		await hooks.beforeRequest(context);
-	}
+			if (responseType === "stream") {
+				const data = response.body as GetReturnType[TResponseType];
+				return ok({ data, headers: response.headers });
+			}
 
-	try {
-		context.response ??= await context.fetch(context.request);
+			if (responseType === "void") {
+				await response.body?.cancel();
+				const data = null as GetReturnType[TResponseType];
+				return ok({ data, headers: response.headers });
+			}
 
-		if (!context.response.ok) {
-			throw new HttpError(context.request, context.response);
-		}
+			if (
+				responseType === "json" &&
+				(response.status === 204 || response.headers.get("content-length") === "0")
+			) {
+				await response.body?.cancel();
+				const data = null as GetReturnType[TResponseType];
+				return ok({ data, headers: response.headers });
+			}
 
-		if (hooks?.afterResponse != null) {
-			await hooks.afterResponse(context);
-		}
+			const data = (await response[
+				responseType as Exclude<TResponseType, "json" | "raw" | "stream" | "void">
+			]()) as GetReturnType[TResponseType];
 
-		const contentType = typeof responseType === "function" ? responseType(context) : responseType;
+			return ok({ data, headers: response.headers });
+		} catch (error: unknown) {
+			attempts += 1;
 
-		if (
-			contentType === "json" &&
-			(context.response.status === 204 || context.response.headers.get("content-length") === "0")
-		) {
-			await context.response.body?.cancel();
-			return "";
-		} else if (contentType === "raw") {
-			return context.response;
-		} else if (contentType === "stream") {
-			return context.response.body;
-		} else if (contentType === "void") {
-			await context.response.body?.cancel();
-			return null;
-		}
-
-		// eslint-disable-next-line @typescript-eslint/return-await, @typescript-eslint/no-unsafe-return
-		return context.response[contentType]();
-	} catch (error) {
-		context.error = error as Error;
-
-		const retryConfig = { ...defaultRetryConfig, ...retries };
-
-		if (retryConfig.shouldRetry(context)) {
-			const delay = retryConfig.delay(context);
-
-			const { error } = await promise(() => {
-				return wait(delay, controller.signal);
-			});
-
-			if (error == null) {
-				if (hooks?.beforeRetry != null) {
-					await hooks.beforeRetry(context);
+			if (error instanceof Error) {
+				/** error instanceof DOMException */
+				if (error.name === "AbortError") {
+					return err(new AbortError(request, error));
 				}
 
-				// eslint-disable-next-line @typescript-eslint/return-await
-				return request(context.request, { count: count + 1 });
-			} else {
-				context.error = error;
+				/** error instanceof DOMException */
+				if (error.name === "TimeoutError") {
+					return err(new TimeoutError(request, error));
+				}
+
+				if (error instanceof HttpError) {
+					if (
+						attempts < retries + 1 &&
+						[
+							408, 413, 429, 500, 502, 503, 504,
+							/** The following are cloudflare-specific status codes. */ 521, 522, 524,
+						].includes(error.response.status) &&
+						/**
+						 * In rest apis, only `patch` and `post` are not idempotent.
+						 * However, in rpc apis, `delete` and `put` may have side-effects as well.
+						 */
+						[
+							// "delete",
+							"get",
+							"head",
+							"options",
+							// "patch",
+							// "post",
+							// "put",
+							"trace",
+						].includes(error.request.method)
+					) {
+						const retryAfter = getRetryAfterDelay(error.response);
+
+						if (retryAfter != null && retryAfter > timeout) {
+							return err(error);
+						}
+
+						if (retryAfter == null && error.response.status === 413) {
+							return err(error);
+						}
+
+						await wait(retryAfter ?? backoff(attempts), _signal ?? undefined);
+						continue;
+					}
+
+					return err(error);
+				}
+
+				if (isNetworkError(error)) {
+					if (attempts < retries + 1) {
+						await wait(backoff(attempts), _signal ?? undefined);
+						continue;
+					}
+
+					return err(new NetworkError(request, error));
+				}
+			}
+
+			throw error;
+		}
+	}
+}
+
+export class HttpError extends Error {
+	private static readonly type = "HttpError";
+	request: Request;
+	response: Response;
+
+	static is(error: unknown): error is HttpError {
+		if (error instanceof HttpError) {
+			return true;
+		}
+
+		return error instanceof Error && error.name === HttpError.type;
+	}
+
+	constructor(
+		request: Request,
+		response: Response,
+		message = `${response.statusText} (${String(response.status)}) for ${request.method} ${request.url}`,
+	) {
+		super(message);
+
+		this.name = HttpError.type;
+		this.request = request;
+		this.response = response;
+	}
+}
+
+export class AbortError extends Error {
+	private static readonly type = "AbortError";
+	request: Request;
+
+	static is(error: unknown): error is AbortError {
+		if (error instanceof AbortError) {
+			return true;
+		}
+
+		return error instanceof Error && error.name === AbortError.type;
+	}
+
+	constructor(
+		request: Request,
+		cause: Error,
+		message = `Request aborted for ${request.method} ${request.url}`,
+	) {
+		super(message, { cause });
+
+		this.name = AbortError.type;
+		this.request = request;
+	}
+}
+
+export class TimeoutError extends Error {
+	private static readonly type = "TimeoutError";
+	request: Request;
+
+	static is(error: unknown): error is TimeoutError {
+		if (error instanceof TimeoutError) {
+			return true;
+		}
+
+		return error instanceof Error && error.name === TimeoutError.type;
+	}
+
+	constructor(
+		request: Request,
+		cause: Error,
+		message = `Request timed out for ${request.method} ${request.url}`,
+	) {
+		super(message, { cause });
+
+		this.name = TimeoutError.type;
+		this.request = request;
+	}
+}
+
+export class NetworkError extends Error {
+	private static readonly type = "NetworkError";
+	request: Request;
+
+	static is(error: unknown): error is NetworkError {
+		if (error instanceof NetworkError) {
+			return true;
+		}
+
+		return error instanceof Error && error.name === NetworkError.type;
+	}
+
+	constructor(
+		request: Request,
+		cause: Error,
+		message = `Network error for ${request.method} ${request.url}`,
+	) {
+		super(message, { cause });
+
+		this.name = NetworkError.type;
+		this.request = request;
+	}
+}
+
+function backoff(attempts: number): number {
+	return 1000 * Math.pow(2, attempts - 1) * 0.3;
+}
+
+function getRetryAfterDelay(response: Response): number | null {
+	const retryAfter = response.headers.get("retry-after");
+
+	if (retryAfter == null) {
+		return null;
+	}
+
+	if (![413, 429, 503].includes(response.status)) {
+		return null;
+	}
+
+	/** The `retry-after` header can be specified as a date, or in seconds. */
+	const time = Number(retryAfter);
+
+	if (!Number.isNaN(time)) {
+		return 1000 * time;
+	}
+
+	const timestamp = new Date(time).getTime();
+
+	if (!Number.isNaN(timestamp)) {
+		return timestamp - Date.now();
+	}
+
+	return null;
+}
+
+export function getContentType(response: Response): string | null {
+	const contentTypeHeader = response.headers.get("content-type");
+
+	return contentTypeHeader?.split(";").at(0)?.trim() ?? null;
+}
+
+/**
+ * Polyfills.
+ *
+ * @see {@link https://caniuse.com/mdn-api_abortsignal_any_static}
+ * @see {@link https://caniuse.com/mdn-api_abortsignal_timeout_static}
+ */
+
+if (!Object.prototype.hasOwnProperty.call(AbortSignal, "timeout")) {
+	AbortSignal.timeout = function timeout(ms: number): AbortSignal {
+		const controller = new AbortController();
+
+		setTimeout(() => {
+			controller.abort(new DOMException("TimeoutError", "TimeoutError"));
+		}, ms);
+
+		return controller.signal;
+	};
+}
+
+if (!Object.prototype.hasOwnProperty.call(AbortSignal, "any")) {
+	AbortSignal.any = function any(signals: Array<AbortSignal>): AbortSignal {
+		const controller = new AbortController();
+
+		function onAbort(this: AbortSignal) {
+			controller.abort(this.reason);
+			cleanup();
+		}
+
+		function cleanup() {
+			for (const signal of signals) {
+				signal.removeEventListener("abort", onAbort);
 			}
 		}
 
-		if (hooks?.beforeError != null) {
-			await hooks.beforeError(context);
+		for (const signal of signals) {
+			if (signal.aborted) {
+				controller.abort(signal.reason);
+				cleanup();
+				break;
+			}
+
+			signal.addEventListener("abort", onAbort, { once: true });
 		}
 
-		throw context.error;
-	} finally {
-		if (timer != null) {
-			clearTimeout(timer);
-		}
-	}
+		return controller.signal;
+	};
 }
