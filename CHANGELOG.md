@@ -1,5 +1,11 @@
 # @acdh-oeaw/lib
 
+## 1.0.1
+
+### Patch Changes
+
+- [#49](https://github.com/acdh-oeaw/lib/pull/49) [`18a4ee3`](https://github.com/acdh-oeaw/lib/commit/18a4ee3805d4ea05e6b72b5148d7ddab1914c448) Thanks [@stefanprobst](https://github.com/stefanprobst)! - make error type const
+
 ## 1.0.0
 
 ### Major Changes
