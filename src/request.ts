@@ -257,8 +257,9 @@ export async function request(
  * Errors.
  =============================================================================================== */
 
+/** HttpError. */
 export class HttpError extends Error {
-	private static readonly type = "HttpError";
+	private static readonly type = "HttpError" as const;
 	request: Request;
 	response: Response;
 
@@ -283,8 +284,9 @@ export class HttpError extends Error {
 	}
 }
 
+/** AbortError. */
 export class AbortError extends Error {
-	private static readonly type = "AbortError";
+	private static readonly type = "AbortError" as const;
 	request: Request;
 
 	static is(error: unknown): error is AbortError {
@@ -307,8 +309,9 @@ export class AbortError extends Error {
 	}
 }
 
+/** TimeoutError. */
 export class TimeoutError extends Error {
-	private static readonly type = "TimeoutError";
+	private static readonly type = "TimeoutError" as const;
 	request: Request;
 
 	static is(error: unknown): error is TimeoutError {
@@ -331,8 +334,9 @@ export class TimeoutError extends Error {
 	}
 }
 
+/** NetworkError. */
 export class NetworkError extends Error {
-	private static readonly type = "NetworkError";
+	private static readonly type = "NetworkError" as const;
 	request: Request;
 
 	static is(error: unknown): error is NetworkError {
