@@ -1,5 +1,11 @@
 # @acdh-oeaw/lib
 
+## 1.0.3
+
+### Patch Changes
+
+- [#54](https://github.com/acdh-oeaw/lib/pull/54) [`261771f`](https://github.com/acdh-oeaw/lib/commit/261771f9b730101cc34ea1224f303f059623e1d2) Thanks [@stefanprobst](https://github.com/stefanprobst)! - fix: expose error types"
+
 ## 1.0.2
 
 ### Patch Changes
