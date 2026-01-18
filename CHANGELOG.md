@@ -1,5 +1,11 @@
 # @acdh-oeaw/lib
 
+## 1.0.4
+
+### Patch Changes
+
+- [#56](https://github.com/acdh-oeaw/lib/pull/56) [`83b2388`](https://github.com/acdh-oeaw/lib/commit/83b2388dddd360a38bab1ea7cbb9ef81cf97a99f) Thanks [@stefanprobst](https://github.com/stefanprobst)! - change error cause params order
+
 ## 1.0.3
 
 ### Patch Changes
