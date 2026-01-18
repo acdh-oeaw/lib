@@ -24,7 +24,7 @@
 			"onFail": "download"
 		}
 	},
-	"packageManager": "pnpm@10.27.0",
+	"packageManager": "pnpm@10.28.0",
 	"scripts": {
 		"build": "tsdown",
 		"changeset:add": "changeset add",
@@ -46,16 +46,14 @@
 		"is-network-error": "^1.3.0"
 	},
 	"devDependencies": {
-		"@acdh-oeaw/commitlint-config": "^3.0.0",
 		"@acdh-oeaw/eslint-config": "^2.0.12",
 		"@acdh-oeaw/eslint-config-node": "^2.0.12",
 		"@acdh-oeaw/tsconfig-lib": "^1.3.0",
 		"@arethetypeswrong/core": "^0.18.2",
 		"@changesets/changelog-github": "^0.5.2",
 		"@changesets/cli": "^2.29.8",
-		"@commitlint/cli": "^20.3.0",
 		"@sinonjs/fake-timers": "^15.1.0",
-		"@types/node": "^24.10.4",
+		"@types/node": "^24.10.9",
 		"@types/sinonjs__fake-timers": "^15.0.1",
 		"eslint": "^9.39.2",
 		"eslint-config-flat-gitignore": "^2.1.0",
@@ -67,12 +65,9 @@
 		"npm-run-all2": "^8.0.4",
 		"oxfmt": "^0.23.0",
 		"simple-git-hooks": "^2.13.1",
-		"tsdown": "^0.19.0-beta.3",
+		"tsdown": "^0.19.0",
 		"typescript": "^5.9.3",
 		"uvu": "^0.5.6"
-	},
-	"commitlint": {
-		"extends": "@acdh-oeaw/commitlint-config"
 	},
 	"lint-staged": {
 		"*.@(js|ts)": [
@@ -82,7 +77,6 @@
 		"*.!(js|ts)": "oxfmt --no-error-on-unmatched-pattern --write"
 	},
 	"simple-git-hooks": {
-		"commit-msg": "pnpm exec commitlint --edit",
 		"pre-commit": "pnpm exec lint-staged",
 		"pre-push": "pnpm run validate"
 	}
