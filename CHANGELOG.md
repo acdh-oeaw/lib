@@ -1,5 +1,11 @@
 # @acdh-oeaw/lib
 
+## 1.0.2
+
+### Patch Changes
+
+- [#51](https://github.com/acdh-oeaw/lib/pull/51) [`feccada`](https://github.com/acdh-oeaw/lib/commit/feccadadfc7e1ea973bc4d2ec7bee75cf5dc479b) Thanks [@stefanprobst](https://github.com/stefanprobst)! - accept string as request url
+
 ## 1.0.1
 
 ### Patch Changes
