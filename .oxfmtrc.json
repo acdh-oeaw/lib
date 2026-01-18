@@ -4,6 +4,6 @@
 		"groups": [["side-effect"], ["builtin"], ["external"], ["internal", "subpath"], ["unknown"]]
 	},
 	"experimentalSortPackageJson": false,
-	"ignorePatterns": ["pnpm-lock.yaml", "pnpm-workspace.yaml"],
+	"ignorePatterns": ["pnpm-workspace.yaml"],
 	"useTabs": true
 }
