@@ -53,52 +53,52 @@ export type RequestResult<TData> = Result<{ data: TData; headers: Headers }, Req
  =============================================================================================== */
 
 export async function request(
-	url: URL,
+	url: URL | string,
 	options: RequestOptions<"arrayBuffer">,
 ): Promise<RequestResult<ArrayBuffer>>;
 
 export async function request(
-	url: URL,
+	url: URL | string,
 	options: RequestOptions<"blob">,
 ): Promise<RequestResult<Blob>>;
 
 export async function request(
-	url: URL,
+	url: URL | string,
 	options: RequestOptions<"formData">,
 ): Promise<RequestResult<FormData>>;
 
 export async function request(
-	url: URL,
+	url: URL | string,
 	options: RequestOptions<"json">,
 ): Promise<RequestResult<unknown>>;
 
 export async function request<TData>(
-	url: URL,
+	url: URL | string,
 	options: RequestOptions<"json">,
 ): Promise<RequestResult<TData>>;
 
 export async function request(
-	url: URL,
+	url: URL | string,
 	options: RequestOptions<"raw">,
 ): Promise<RequestResult<Response>>;
 
 export async function request(
-	url: URL,
+	url: URL | string,
 	options: RequestOptions<"stream">,
 ): Promise<RequestResult<ReadableStream<Uint8Array> | null>>;
 
 export async function request(
-	url: URL,
+	url: URL | string,
 	options: RequestOptions<"text">,
 ): Promise<RequestResult<string>>;
 
 export async function request(
-	url: URL,
+	url: URL | string,
 	options: RequestOptions<"void">,
 ): Promise<RequestResult<null>>;
 
 export async function request(
-	url: URL,
+	url: URL | string,
 	options: RequestOptions<ResponseType>,
 ): Promise<RequestResult<unknown>> {
 	const {
