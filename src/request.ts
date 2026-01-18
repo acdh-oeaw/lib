@@ -224,12 +224,12 @@ export async function request(
 					/** Older implementations did not use "TimeoutError". */
 					timeoutSignal?.aborted
 				) {
-					return err(new TimeoutError(request, error));
+					return err(new TimeoutError(request, undefined, error));
 				}
 
 				/** error instanceof DOMException */
 				if (error.name === "AbortError") {
-					return err(new AbortError(request, error));
+					return err(new AbortError(request, undefined, error));
 				}
 
 				const retry = shouldRetry(error, attempts, retries);
@@ -244,7 +244,7 @@ export async function request(
 				}
 
 				if (isNetworkError(error)) {
-					return err(new NetworkError(request, error));
+					return err(new NetworkError(request, undefined, error));
 				}
 			}
 
@@ -275,8 +275,9 @@ export class HttpError extends Error {
 		request: Request,
 		response: Response,
 		message = `${response.statusText} (${String(response.status)}) for ${request.method} ${request.url}`,
+		cause?: Error,
 	) {
-		super(message);
+		super(message, { cause });
 
 		this.name = HttpError.type;
 		this.request = request;
@@ -299,8 +300,8 @@ export class AbortError extends Error {
 
 	constructor(
 		request: Request,
-		cause: Error,
 		message = `Request aborted for ${request.method} ${request.url}`,
+		cause?: Error,
 	) {
 		super(message, { cause });
 
@@ -324,8 +325,8 @@ export class TimeoutError extends Error {
 
 	constructor(
 		request: Request,
-		cause: Error,
 		message = `Request timed out for ${request.method} ${request.url}`,
+		cause?: Error,
 	) {
 		super(message, { cause });
 
@@ -349,8 +350,8 @@ export class NetworkError extends Error {
 
 	constructor(
 		request: Request,
-		cause: Error,
 		message = `Network error for ${request.method} ${request.url}`,
+		cause?: Error,
 	) {
 		super(message, { cause });
 
