@@ -1,5 +1,11 @@
 # @acdh-oeaw/lib
 
+## 1.0.5
+
+### Patch Changes
+
+- [#58](https://github.com/acdh-oeaw/lib/pull/58) [`5081359`](https://github.com/acdh-oeaw/lib/commit/5081359d7b93172babb4e6313308c67aae6a3376) Thanks [@stefanprobst](https://github.com/stefanprobst)! - add createFormData util
+
 ## 1.0.4
 
 ### Patch Changes
