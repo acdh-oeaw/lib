@@ -2,6 +2,7 @@ export * from "./add-trailing-slash.ts";
 export * from "./assert.ts";
 export * from "./capitalize.ts";
 export * from "./clamp.ts";
+export * from "./create-form-data.ts";
 export * from "./create-headers.ts";
 export * from "./create-pagination.ts";
 export * from "./create-timer.ts";

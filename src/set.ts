@@ -20,6 +20,7 @@ export function set(
 	}
 
 	const segment = segments[i]!;
+
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 	o[segment] = typeof value === "function" ? value(o[segment]) : value;
 }

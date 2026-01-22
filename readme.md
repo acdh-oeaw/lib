@@ -12,6 +12,7 @@ npm install @acdh-oeaw/lib
 - `assert`
 - `capitalize`
 - `clamp`
+- `createFormData`
 - `createHeaders`
 - `createPagination`
 - `createTimer`
