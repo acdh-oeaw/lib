@@ -35,6 +35,7 @@ export * from "./remove-trailing-slash.ts";
 export * from "./request.ts";
 export * from "./result.ts";
 export * from "./set.ts";
+export * from "./singleton.ts";
 export * from "./template.ts";
 export * from "./times.ts";
 export * from "./unique.ts";

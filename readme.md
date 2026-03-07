@@ -45,6 +45,7 @@ npm install @acdh-oeaw/lib
 - `request`
 - `Result`, `err`, `ok`, `isErr`, `isOk`, `result`
 - `set`
+- `singleton`
 - `template`
 - `times`
 - `unique`
