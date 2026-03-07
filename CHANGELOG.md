@@ -1,5 +1,11 @@
 # @acdh-oeaw/lib
 
+## 1.0.6
+
+### Patch Changes
+
+- [#61](https://github.com/acdh-oeaw/lib/pull/61) [`9840615`](https://github.com/acdh-oeaw/lib/commit/9840615631e68e9d96637084afdc4515207d7821) Thanks [@stefanprobst](https://github.com/stefanprobst)! - add singleton
+
 ## 1.0.5
 
 ### Patch Changes
