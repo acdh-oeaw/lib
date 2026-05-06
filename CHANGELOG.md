@@ -1,5 +1,11 @@
 # @acdh-oeaw/lib
 
+## 1.0.7
+
+### Patch Changes
+
+- [#64](https://github.com/acdh-oeaw/lib/pull/64) [`081153a`](https://github.com/acdh-oeaw/lib/commit/081153a44729a9526d3a68f608b7d0adca4fe8bc) Thanks [@stefanprobst](https://github.com/stefanprobst)! - add warn util
+
 ## 1.0.6
 
 ### Patch Changes
