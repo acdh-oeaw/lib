@@ -41,3 +41,4 @@ export * from "./times.ts";
 export * from "./unique.ts";
 export * from "./unreachable.ts";
 export * from "./wait.ts";
+export * from "./warn.ts";
