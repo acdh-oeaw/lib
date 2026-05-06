@@ -51,3 +51,4 @@ npm install @acdh-oeaw/lib
 - `unique`
 - `unreachable`
 - `wait`
+- `warn`
