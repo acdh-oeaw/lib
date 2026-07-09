@@ -1,11 +1,6 @@
-export function range(start: number, end: number): Array<number> {
-	if (start > end) {
-		return [];
+export function* range(start: number, end: number) {
+	while (start <= end) {
+		// eslint-disable-next-line no-param-reassign
+		yield start++;
 	}
-
-	return Array(end - start + 1)
-		.fill(null)
-		.map((_, i) => {
-			return i + start;
-		});
 }

@@ -1,4 +1,5 @@
-export function times(n: number): Array<null> {
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
-	return Array(n).fill(null);
+import { range } from "./range.js";
+
+export function times(n: number) {
+	return range(0, n - 1);
 }

@@ -10,7 +10,7 @@ const test = suite("createPagination");
 test("Create pagination sequence when pages less than minimum length", () => {
 	const pages = 11;
 
-	const results = range(1, pages).map((page) => {
+	const results = [...range(1, pages)].map((page) => {
 		return pretty(createPagination({ page, pages }), page);
 	});
 
@@ -32,7 +32,7 @@ test("Create pagination sequence when pages less than minimum length", () => {
 test("Create pagination sequence with ellipsis (event page count)", () => {
 	const pages = 12;
 
-	const results = range(1, pages).map((page) => {
+	const results = [...range(1, pages)].map((page) => {
 		return pretty(createPagination({ page, pages }), page);
 	});
 
@@ -55,7 +55,7 @@ test("Create pagination sequence with ellipsis (event page count)", () => {
 test("Create pagination sequence with ellipsis (odd page count)", () => {
 	const pages = 13;
 
-	const results = range(1, pages).map((page) => {
+	const results = [...range(1, pages)].map((page) => {
 		return pretty(createPagination({ page, pages }), page);
 	});
 
@@ -79,7 +79,7 @@ test("Create pagination sequence with ellipsis (odd page count)", () => {
 test("Create pagination sequence with ellipsis (many pages)", () => {
 	const pages = 25;
 
-	const results = range(1, pages).map((page) => {
+	const results = [...range(1, pages)].map((page) => {
 		return pretty(createPagination({ page, pages }), page);
 	});
 
@@ -115,7 +115,7 @@ test("Create pagination sequence with ellipsis (many pages)", () => {
 test("Create pagination sequence with custom edge count", () => {
 	const pages = 11;
 
-	const results = range(1, pages).map((page) => {
+	const results = [...range(1, pages)].map((page) => {
 		return pretty(createPagination({ page, pages, edges: 1 }), page);
 	});
 
@@ -137,7 +137,7 @@ test("Create pagination sequence with custom edge count", () => {
 test("Create pagination sequence with no edges", () => {
 	const pages = 11;
 
-	const results = range(1, pages).map((page) => {
+	const results = [...range(1, pages)].map((page) => {
 		return pretty(createPagination({ page, pages, edges: 0 }), page);
 	});
 
@@ -159,7 +159,7 @@ test("Create pagination sequence with no edges", () => {
 test("Create pagination sequence with custom neighbor count", () => {
 	const pages = 11;
 
-	const results = range(1, pages).map((page) => {
+	const results = [...range(1, pages)].map((page) => {
 		return pretty(createPagination({ page, pages, neighbors: 1 }), page);
 	});
 
@@ -181,7 +181,7 @@ test("Create pagination sequence with custom neighbor count", () => {
 test("Create pagination sequence with no neighbors", () => {
 	const pages = 11;
 
-	const results = range(1, pages).map((page) => {
+	const results = [...range(1, pages)].map((page) => {
 		return pretty(createPagination({ page, pages, neighbors: 0 }), page);
 	});
 
@@ -203,7 +203,7 @@ test("Create pagination sequence with no neighbors", () => {
 test("Create pagination sequence with no edges and no neighbors", () => {
 	const pages = 11;
 
-	const results = range(1, pages).map((page) => {
+	const results = [...range(1, pages)].map((page) => {
 		return pretty(createPagination({ page, pages, edges: 0, neighbors: 0 }), page);
 	});
 
