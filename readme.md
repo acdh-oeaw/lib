@@ -42,7 +42,8 @@ npm install @acdh-oeaw/lib
 - `promise`
 - `range`
 - `removeTrailingSlash`
-- `request`
+- `request`, `RequestError`, `AbortError`, `HttpError`, `NetworkError`, `ParseError`, `TimeoutError`,
+  `ValidationError`, `isServiceUnavailableError`
 - `Result`, `err`, `ok`, `isErr`, `isOk`, `result`
 - `set`
 - `singleton`
