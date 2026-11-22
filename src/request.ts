@@ -1,526 +1,529 @@
-import isNetworkError from "is-network-error";
+import type { StandardSchemaV1 } from "@standard-schema/spec";
 
-import { err, ok, type Result } from "./result.ts";
-import { wait } from "./wait.ts";
+export type HttpMethod = "delete" | "get" | "head" | "options" | "patch" | "post" | "put";
 
-export type ResponseType =
-	| "arrayBuffer"
-	| "blob"
-	| "formData"
-	| "json"
-	| "raw"
-	| "stream"
-	| "text"
-	| "void";
+interface ResponseTypes {
+	bytes: Uint8Array<ArrayBuffer>;
+	json: unknown;
+	text: string;
+	void: undefined;
+}
 
-export type HttpMethod = "delete" | "get" | "head" | "options" | "patch" | "post" | "put" | "trace";
+export type ResponseType = keyof ResponseTypes;
 
-/**
- * We rely on `JSON.stringify` semantics for treating `undefined`, and don't want type errors for
- * `undefined` values in objects.
- */
-type JsonPrimitive = string | number | boolean | null | undefined;
-type JsonValue = JsonPrimitive | Array<JsonValue> | { [key: string]: JsonValue };
+/** @see {@link https://github.com/oven-sh/bun/issues/23741#issuecomment-3410060027} */
+type Fetch = (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>;
 
-export type RequestBody = BodyInit | JsonValue | null;
+type RequestBody =
+	| { body?: BodyInit; json?: never }
+	| {
+			body?: never;
+			/** Serialized with `JSON.stringify`, and sent with a json `content-type`. */
+			json: unknown;
+	  };
 
-export interface RequestOptions<TResponseType extends ResponseType> extends Omit<
-	RequestInit,
-	"body" | "method"
-> {
-	body?: RequestBody;
-	fetch?: typeof globalThis.fetch;
+interface BaseRequestOptions extends Omit<RequestInit, "body" | "method" | "signal"> {
+	fetch?: Fetch;
+	/** @default "get" */
 	method?: HttpMethod;
-	responseType: TResponseType;
 	/**
+	 * Retries after network errors, and http 408, 429 and 5xx, for safe methods only. Waits with exponential backoff, or
+	 * as long as a `retry-after` header asks, if that fits within the `timeout` and is at most a minute.
+	 *
 	 * @default 0
 	 */
 	retries?: number;
+	signal?: AbortSignal;
 	/**
-	 * Timeout in milliseconds.
+	 * Milliseconds for the whole request, including retries and reading the body.
 	 *
 	 * @default 10_000
 	 */
 	timeout?: number | false;
 }
 
-export type RequestError = AbortError | HttpError | NetworkError | TimeoutError;
+export type RequestOptions<
+	TResponseType extends ResponseType = ResponseType,
+	TSchema extends StandardSchemaV1 | undefined = undefined,
+> = BaseRequestOptions &
+	RequestBody & {
+		responseType: TResponseType;
+		/** Validates a json response body, with any [Standard Schema](https://standardschema.dev), like valibot or zod. */
+		schema?: TResponseType extends "json" ? TSchema : never;
+	};
 
-export type RequestResult<TData> = Result<{ data: TData; headers: Headers }, RequestError>;
+export interface RequestResponse<TData> {
+	data: TData;
+	headers: Headers;
+}
 
-/** ===============================================================================================
- * Request.
- =============================================================================================== */
+type ResponseData<TResponseType extends ResponseType, TSchema> = TResponseType extends "json"
+	? TSchema extends StandardSchemaV1
+		? StandardSchemaV1.InferOutput<TSchema>
+		: unknown
+	: ResponseTypes[TResponseType];
 
-export async function request(
+const safeMethods = new Set(["GET", "HEAD", "OPTIONS"]);
+
+const retryableStatusCodes = new Set([408, 429, 500, 502, 503, 504]);
+
+const errorBodyBytes = 4096;
+
+const maxRetryDelay = 60_000;
+
+/**
+ * Throws a `RequestError` subclass for errors at runtime, like an unreachable server or an error status. Invalid
+ * arguments, like a malformed url, throw as they are, because they are bugs.
+ */
+export async function request<
+	TResponseType extends ResponseType,
+	TSchema extends StandardSchemaV1 | undefined = undefined,
+>(
 	url: URL | string,
-	options: RequestOptions<"arrayBuffer">,
-): Promise<RequestResult<ArrayBuffer>>;
-
-export async function request(
-	url: URL | string,
-	options: RequestOptions<"blob">,
-): Promise<RequestResult<Blob>>;
-
-export async function request(
-	url: URL | string,
-	options: RequestOptions<"formData">,
-): Promise<RequestResult<FormData>>;
-
-export async function request(
-	url: URL | string,
-	options: RequestOptions<"json">,
-): Promise<RequestResult<unknown>>;
-
-export async function request<TData>(
-	url: URL | string,
-	options: RequestOptions<"json">,
-): Promise<RequestResult<TData>>;
-
-export async function request(
-	url: URL | string,
-	options: RequestOptions<"raw">,
-): Promise<RequestResult<Response>>;
-
-export async function request(
-	url: URL | string,
-	options: RequestOptions<"stream">,
-): Promise<RequestResult<ReadableStream<Uint8Array> | null>>;
-
-export async function request(
-	url: URL | string,
-	options: RequestOptions<"text">,
-): Promise<RequestResult<string>>;
-
-export async function request(
-	url: URL | string,
-	options: RequestOptions<"void">,
-): Promise<RequestResult<null>>;
-
-export async function request(
-	url: URL | string,
-	options: RequestOptions<ResponseType>,
-): Promise<RequestResult<unknown>> {
+	options: RequestOptions<TResponseType, TSchema>,
+): Promise<RequestResponse<ResponseData<TResponseType, TSchema>>> {
 	const {
-		body: initBody,
+		body: _body,
 		fetch = globalThis.fetch,
-		headers: initHeaders,
-		method: initMethod,
+		headers: _headers,
+		json,
+		method: _method = "get",
 		responseType,
 		retries = 0,
-		signal: externalSignal,
+		schema,
+		signal: callerSignal,
 		timeout = 10_000,
-		...fetchOptions
+		...init
 	} = options;
 
-	const method = initMethod != null ? (initMethod.toUpperCase() as Uppercase<HttpMethod>) : "GET";
+	const method = _method.toUpperCase();
+	const href = String(url);
+	const headers = new Headers(_headers);
 
-	const headers = new Headers(initHeaders);
+	let body: BodyInit | null = _body ?? null;
 
-	if (!headers.has("accept")) {
-		if (responseType === "json") {
-			headers.set("accept", "application/json");
-		} else if (responseType === "text") {
-			headers.set("accept", "text/plain");
-		} else {
-			headers.set("accept", "*/*");
+	if (json !== undefined) {
+		body = JSON.stringify(json);
+		if (!headers.has("content-type")) {
+			headers.set("content-type", "application/json");
 		}
 	}
 
-	let body: BodyInit | null = null;
+	if (responseType === "json" && !headers.has("accept")) {
+		headers.set("accept", "application/json");
+	}
 
-	if (initBody !== undefined) {
-		if (isJsonBody(initBody)) {
-			body = JSON.stringify(initBody);
+	const startedAt = performance.now();
+	/** Combines the caller's signal and the timeout without `AbortSignal.any`, which older browsers don't support. */
+	const controller = new AbortController();
+	const { signal } = controller;
 
-			if (!headers.has("content-type")) {
-				headers.set("content-type", "application/json");
+	const timer =
+		timeout !== false
+			? setTimeout(() => {
+					controller.abort(new DOMException("The operation timed out.", "TimeoutError"));
+				}, timeout)
+			: undefined;
+
+	function onCallerAbort() {
+		controller.abort(callerSignal?.reason);
+	}
+
+	if (callerSignal?.aborted === true) {
+		onCallerAbort();
+	} else {
+		callerSignal?.addEventListener("abort", onCallerAbort, { once: true });
+	}
+
+	/** A stream can only be sent once. */
+	const canRetry = safeMethods.has(method) && !(body instanceof ReadableStream);
+
+	function toRequestError(error: unknown) {
+		const options = { cause: error, method, url: href };
+
+		if (callerSignal?.aborted === true) {
+			return new AbortError({ ...options, cause: callerSignal.reason });
+		}
+
+		/** Otherwise only the timeout aborts the signal. */
+		if (signal.aborted || isBunSocketTimeout(error)) {
+			return new TimeoutError(options);
+		}
+
+		if (isNetworkError(error)) {
+			return new NetworkError(options);
+		}
+
+		return null;
+	}
+
+	try {
+		for (let attempt = 0; ; attempt++) {
+			let failure: HttpError | NetworkError;
+
+			try {
+				const response = await fetch(href, { ...init, body, headers, method, signal });
+
+				if (response.ok) {
+					const data = await readBody(response);
+					return { data: data as ResponseData<TResponseType, TSchema>, headers: response.headers };
+				}
+
+				const errorBody = await readStart(response, errorBodyBytes);
+				/** `readStart` ignores errors, so a timeout or abort while reading would otherwise become an `HttpError`. */
+				signal.throwIfAborted();
+				failure = new HttpError({ body: errorBody, method, response, url: href });
+			} catch (error) {
+				if (error instanceof ParseError || error instanceof ValidationError) {
+					throw error;
+				}
+
+				const requestError = toRequestError(error);
+
+				if (requestError == null) {
+					throw error;
+				}
+
+				if (!(requestError instanceof NetworkError)) {
+					throw requestError;
+				}
+
+				failure = requestError;
 			}
-		} else {
-			body = initBody;
+
+			const delay = attempt < retries && canRetry ? getRetryDelay(failure, attempt) : null;
+			const remaining = timeout !== false ? timeout - (performance.now() - startedAt) : Infinity;
+
+			if (delay == null || delay >= remaining) {
+				throw failure;
+			}
+
+			try {
+				await sleep(delay, signal);
+			} catch (error) {
+				throw toRequestError(error) ?? (error as Error);
+			}
 		}
+	} finally {
+		clearTimeout(timer);
+		callerSignal?.removeEventListener("abort", onCallerAbort);
 	}
 
-	let attempts = 0;
+	async function readBody(response: Response): Promise<unknown> {
+		if (responseType === "void" || method === "HEAD") {
+			await discardBody(response);
+			return undefined;
+		}
 
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-	while (true) {
-		const timeoutSignal = timeout === false ? undefined : AbortSignal.timeout(timeout);
-
-		const signal =
-			externalSignal && timeoutSignal
-				? AbortSignal.any([externalSignal, timeoutSignal])
-				: (externalSignal ?? timeoutSignal ?? null);
-
-		const request = new Request(url, { ...fetchOptions, body, headers, method, signal });
+		let data: unknown;
 
 		try {
-			const response = await fetch(request);
-
-			if (!response.ok) {
-				throw new HttpError(request, response);
-			}
-
-			if (method === "HEAD") {
-				const data = null;
-				return ok({ data, headers: response.headers });
-			}
-
-			switch (responseType) {
-				case "json": {
-					if (response.status === 204 || response.headers.get("content-length") === "0") {
-						await response.body?.cancel();
-						const data = null;
-						return ok({ data, headers: response.headers });
-					}
-
-					const data = (await response.json()) as unknown;
-					return ok({ data, headers: response.headers });
-				}
-
-				case "void": {
-					await response.body?.cancel();
-					const data = null;
-					return ok({ data, headers: response.headers });
-				}
-
-				case "raw": {
-					const data = response;
-					return ok({ data, headers: response.headers });
-				}
-
-				case "stream": {
-					const data = response.body;
-					return ok({ data, headers: response.headers });
-				}
-
-				case "text": {
-					const data = await response.text();
-					return ok({ data, headers: response.headers });
-				}
-
-				case "arrayBuffer": {
-					const data = await response.arrayBuffer();
-					return ok({ data, headers: response.headers });
-				}
-
-				case "blob": {
-					const data = await response.blob();
-					return ok({ data, headers: response.headers });
-				}
-
-				case "formData": {
-					const data = await response.formData();
-					return ok({ data, headers: response.headers });
-				}
+			if (responseType === "bytes") {
+				data = new Uint8Array(await response.arrayBuffer());
+			} else if (responseType === "text") {
+				data = await response.text();
+			} else {
+				/** An empty body, like for http 204, has no json value. */
+				const text = await response.text();
+				data = text === "" ? undefined : JSON.parse(text);
 			}
 		} catch (error) {
-			attempts += 1;
-
-			if (error instanceof Error) {
-				/** error instanceof DOMException */
-				if (
-					error.name === "TimeoutError" ||
-					/** Older implementations did not use "TimeoutError". */
-					timeoutSignal?.aborted
-				) {
-					return err(new TimeoutError(request, undefined, error));
-				}
-
-				/** error instanceof DOMException */
-				if (error.name === "AbortError") {
-					return err(new AbortError(request, undefined, error));
-				}
-
-				const retry = shouldRetry(error, attempts, retries);
-
-				if (retry != null) {
-					await wait(retry.delay, externalSignal ?? undefined);
-					continue;
-				}
-
-				if (error instanceof HttpError) {
-					return err(error);
-				}
-
-				if (isNetworkError(error)) {
-					return err(new NetworkError(request, undefined, error));
-				}
+			if (toRequestError(error) != null) {
+				throw error;
 			}
 
-			throw error;
+			throw new ParseError({ cause: error, method, url: href });
 		}
+
+		if (responseType !== "json" || schema == null) {
+			return data;
+		}
+
+		const result = await schema["~standard"].validate(data);
+
+		if (result.issues != null) {
+			throw new ValidationError({ issues: result.issues, method, url: href });
+		}
+
+		return result.value;
 	}
 }
 
-/** ===============================================================================================
- * Errors.
- =============================================================================================== */
-
-/** HttpError. */
-export class HttpError extends Error {
-	static readonly type = "HttpError";
-	request: Request;
-	response: Response;
-
-	static is(error: unknown): error is HttpError {
-		if (error instanceof HttpError) {
-			return true;
+function getRetryDelay(error: HttpError | NetworkError, attempt: number): number | null {
+	if (error instanceof HttpError) {
+		if (!retryableStatusCodes.has(error.status)) {
+			return null;
 		}
 
-		return error instanceof Error && error.name === HttpError.type;
+		const retryAfter = parseRetryAfter(error.headers.get("retry-after"));
+
+		if (retryAfter != null) {
+			return retryAfter <= maxRetryDelay ? retryAfter : null;
+		}
 	}
 
-	constructor(
-		request: Request,
-		response: Response,
-		message = `${response.statusText} (${String(response.status)}) for ${request.method} ${request.url}`,
-		cause?: Error,
-	) {
-		super(message, { cause });
+	/** Up to 30% shorter, so that clients which failed together don't retry together. */
+	return Math.min(300 * 2 ** attempt, maxRetryDelay) * (1 - Math.random() * 0.3);
+}
 
-		this.name = HttpError.type;
-		this.request = request;
-		this.response = response;
+/** Either seconds or an http date. */
+function parseRetryAfter(value: string | null): number | null {
+	if (value == null) {
+		return null;
+	}
+
+	if (/^\d+$/.test(value)) {
+		return Number(value) * 1000;
+	}
+
+	const date = Date.parse(value);
+
+	return Number.isNaN(date) ? null : Math.max(date - Date.now(), 0);
+}
+
+function sleep(ms: number, signal: AbortSignal): Promise<void> {
+	return new Promise((resolve, reject) => {
+		signal.throwIfAborted();
+
+		const controller = new AbortController();
+
+		const timer = setTimeout(() => {
+			controller.abort();
+			resolve();
+		}, ms);
+
+		signal.addEventListener(
+			"abort",
+			() => {
+				clearTimeout(timer);
+				reject(signal.reason as Error);
+			},
+			{ once: true, signal: controller.signal },
+		);
+	});
+}
+
+/** Releases an unread body, so that its connection goes back to the pool. */
+async function discardBody(response: Response): Promise<void> {
+	try {
+		await response.body?.cancel();
+	} catch {
+		/** Already released. */
 	}
 }
 
-/** AbortError. */
-export class AbortError extends Error {
-	static readonly type = "AbortError";
-	request: Request;
+/** Reads up to `bytes` of the body as text, and discards the rest. */
+async function readStart(response: Response, bytes: number): Promise<string> {
+	if (response.body == null) {
+		return "";
+	}
 
-	static is(error: unknown): error is AbortError {
-		if (error instanceof AbortError) {
-			return true;
+	const reader = response.body.getReader();
+	const chunks: Array<Uint8Array> = [];
+	let length = 0;
+
+	try {
+		while (length < bytes) {
+			const { done, value } = await reader.read();
+			if (done) {
+				break;
+			}
+			chunks.push(value);
+			length += value.byteLength;
 		}
-
-		return error instanceof Error && error.name === AbortError.type;
+	} catch {
+		/** The start of the body is only informational. */
+	} finally {
+		await reader.cancel().catch(() => undefined);
 	}
 
-	constructor(
-		request: Request,
-		message = `Request aborted for ${request.method} ${request.url}`,
-		cause?: Error,
-	) {
-		super(message, { cause });
+	const data = new Uint8Array(Math.min(length, bytes));
+	let offset = 0;
 
-		this.name = AbortError.type;
-		this.request = request;
+	for (const chunk of chunks) {
+		const part = chunk.subarray(0, data.length - offset);
+		data.set(part, offset);
+		offset += part.length;
 	}
+
+	return new TextDecoder().decode(data);
 }
 
-/** TimeoutError. */
-export class TimeoutError extends Error {
-	static readonly type = "TimeoutError";
-	request: Request;
-
-	static is(error: unknown): error is TimeoutError {
-		if (error instanceof TimeoutError) {
-			return true;
-		}
-
-		return error instanceof Error && error.name === TimeoutError.type;
-	}
-
-	constructor(
-		request: Request,
-		message = `Request timed out for ${request.method} ${request.url}`,
-		cause?: Error,
-	) {
-		super(message, { cause });
-
-		this.name = TimeoutError.type;
-		this.request = request;
-	}
+/** Works across realms, unlike `instanceof`, and in browsers without `Error.isError`. */
+function isTypeError(error: unknown): error is TypeError {
+	return (
+		Object.prototype.toString.call(error) === "[object Error]" &&
+		(error as Error).name === "TypeError"
+	);
 }
 
-/** NetworkError. */
-export class NetworkError extends Error {
-	static readonly type = "NetworkError";
-	request: Request;
-
-	static is(error: unknown): error is NetworkError {
-		if (error instanceof NetworkError) {
-			return true;
-		}
-
-		return error instanceof Error && error.name === NetworkError.type;
-	}
-
-	constructor(
-		request: Request,
-		message = `Network error for ${request.method} ${request.url}`,
-		cause?: Error,
-	) {
-		super(message, { cause });
-
-		this.name = NetworkError.type;
-		this.request = request;
-	}
+/** Bun rejects with a `TypeError` with code `Timeout` when its socket idle timeout fires. */
+function isBunSocketTimeout(error: unknown): boolean {
+	return isTypeError(error) && "code" in error && error.code === "Timeout";
 }
 
-/** ===============================================================================================
- * Utilities.
- =============================================================================================== */
+/** Bun sets these codes on the `TypeError`, Node.js on its `cause`, which is matched by message. */
+const networkErrorCodes = new Set([
+	"EAI_AGAIN",
+	"ECONNABORTED",
+	"ECONNREFUSED",
+	"ECONNRESET",
+	"EHOSTUNREACH",
+	"ENETUNREACH",
+	"ENOTFOUND",
+	"EPIPE",
+	"ETIMEDOUT",
+]);
 
-function isJsonBody(body: unknown): body is JsonValue {
-	if (body === null) {
+const networkErrorMessages = new Set([
+	"Failed to fetch",
+	"fetch failed",
+	"Network connection lost",
+	"network error",
+	"Network request failed",
+	"NetworkError when attempting to fetch resource.",
+	"terminated",
+	"The Internet connection appears to be offline.",
+]);
+
+/**
+ * Fetch rejects with a `TypeError` for network errors, but also for invalid requests, so match known codes and
+ * messages. Messages adapted from `is-network-error` (MIT).
+ *
+ * @see {@link https://github.com/sindresorhus/is-network-error}
+ */
+function isNetworkError(error: unknown): boolean {
+	if (!isTypeError(error)) {
+		return false;
+	}
+
+	if ("code" in error && typeof error.code === "string" && networkErrorCodes.has(error.code)) {
 		return true;
 	}
 
-	if (typeof body !== "object") {
-		return false;
+	/** Safari also uses this message for other errors, which have a stack. */
+	if (error.message === "Load failed") {
+		return error.stack === undefined;
 	}
 
-	/** BodyInit. */
-	if (
-		body instanceof ArrayBuffer ||
-		body instanceof Blob ||
-		body instanceof FormData ||
-		body instanceof URLSearchParams ||
-		body instanceof ReadableStream
-	) {
-		return false;
-	}
-
-	return true;
+	return (
+		networkErrorMessages.has(error.message) ||
+		error.message.startsWith("error sending request for url")
+	);
 }
 
-function backoff(attempts: number): number {
-	return 1000 * Math.pow(2, attempts - 1) * 0.3;
+interface RequestErrorOptions {
+	cause?: unknown;
+	method: string;
+	url: string;
 }
 
-/**
- * In rest apis, only `patch` and `post` are not idempotent.
- * However, in rpc apis, `delete` and `put` may have side-effects as well.
- */
-const retryMethods = new Set<Uppercase<HttpMethod>>([
-	// "DELETE",
-	"GET",
-	"HEAD",
-	"OPTIONS",
-	// "PATCH",
-	// "POST",
-	// "PUT",
-	"TRACE",
-]);
+/** Removes credentials in the url, like `https://user:password@example.com`, which would end up in logs. */
+function redactUrl(url: string): string {
+	let parsed: URL;
 
-const retryStatusCodes = new Set([
-	408, 413, 429, 500, 502, 503, 504, /** The following are cloudflare-specific status codes. */ 521,
-	522, 524,
-]);
-
-const retryAfterStatusCodes = new Set([413, 429, 503]);
-
-function getRetryAfterDelay(response: Response): number | null {
-	if (!retryAfterStatusCodes.has(response.status)) {
-		return null;
+	try {
+		parsed = new URL(url);
+	} catch {
+		/** Relative urls have no credentials. */
+		return url;
 	}
 
-	const retryAfter = response.headers.get("retry-after");
-
-	if (retryAfter == null) {
-		return null;
+	if (parsed.username === "" && parsed.password === "") {
+		return url;
 	}
 
-	/** The `retry-after` header can be specified as a date, or in seconds. */
-	const seconds = Number(retryAfter);
+	parsed.username = "";
+	parsed.password = "";
 
-	if (!Number.isNaN(seconds)) {
-		return 1000 * seconds;
-	}
-
-	const timestamp = new Date(retryAfter).getTime();
-
-	if (!Number.isNaN(timestamp)) {
-		return timestamp - Date.now();
-	}
-
-	return null;
+	return parsed.href;
 }
 
-function shouldRetry(error: unknown, attempt: number, retries: number): { delay: number } | null {
-	if (attempt >= retries + 1) {
-		return null;
+export abstract class RequestError extends Error {
+	abstract override readonly name: string;
+	readonly method: string;
+	/** Without credentials. */
+	readonly url: string;
+
+	constructor(message: string, options: RequestErrorOptions) {
+		const url = redactUrl(options.url);
+		super(`${message} - ${options.method} ${url}`, { cause: options.cause });
+		this.method = options.method;
+		this.url = url;
 	}
-
-	if (error instanceof HttpError) {
-		if (
-			retryMethods.has(error.request.method as Uppercase<HttpMethod>) &&
-			retryStatusCodes.has(error.response.status)
-		) {
-			const retryAfter = getRetryAfterDelay(error.response);
-
-			if (retryAfter != null) {
-				return { delay: retryAfter };
-			}
-
-			if (error.response.status === 413) {
-				return null;
-			}
-
-			return { delay: backoff(attempt) };
-		}
-	}
-
-	if (isNetworkError(error)) {
-		return { delay: backoff(attempt) };
-	}
-
-	return null;
 }
 
-export function getContentType(response: Response): string | null {
-	const contentTypeHeader = response.headers.get("content-type");
+/** The caller's `signal` aborted. */
+export class AbortError extends RequestError {
+	override readonly name = "AbortError";
 
-	return contentTypeHeader?.split(";").at(0)?.trim() ?? null;
+	constructor(options: RequestErrorOptions) {
+		super("Request aborted", options);
+	}
 }
 
-/** ===============================================================================================
- * Polyfills.
- *
- * @see {@link https://caniuse.com/mdn-api_abortsignal_any_static}
- * @see {@link https://caniuse.com/mdn-api_abortsignal_timeout_static}
- =============================================================================================== */
+/** The request did not finish within its `timeout`, including retries. */
+export class TimeoutError extends RequestError {
+	override readonly name = "TimeoutError";
 
-if (!Object.prototype.hasOwnProperty.call(AbortSignal, "timeout")) {
-	AbortSignal.timeout = function timeout(ms: number): AbortSignal {
-		const controller = new AbortController();
-
-		setTimeout(() => {
-			controller.abort(new DOMException("TimeoutError", "TimeoutError"));
-		}, ms);
-
-		return controller.signal;
-	};
+	constructor(options: RequestErrorOptions) {
+		super("Request timed out", options);
+	}
 }
 
-if (!Object.prototype.hasOwnProperty.call(AbortSignal, "any")) {
-	AbortSignal.any = function any(signals: Array<AbortSignal>): AbortSignal {
-		const controller = new AbortController();
+/** The server could not be reached, or the connection dropped. */
+export class NetworkError extends RequestError {
+	override readonly name = "NetworkError";
 
-		function onAbort(this: AbortSignal) {
-			controller.abort(this.reason);
-			cleanup();
-		}
+	constructor(options: RequestErrorOptions) {
+		super("Network error", options);
+	}
+}
 
-		function cleanup() {
-			for (const signal of signals) {
-				signal.removeEventListener("abort", onAbort);
-			}
-		}
+/** The response has an error status. `body` holds the start of the response body, the rest is discarded. */
+export class HttpError extends RequestError {
+	override readonly name = "HttpError";
+	readonly status: number;
+	readonly headers: Headers;
+	readonly body: string;
 
-		for (const signal of signals) {
-			if (signal.aborted) {
-				controller.abort(signal.reason);
-				cleanup();
-				break;
-			}
+	constructor(options: RequestErrorOptions & { body: string; response: Response }) {
+		const { body, response } = options;
+		super(`${String(response.status)} ${response.statusText}`, options);
+		this.status = response.status;
+		this.headers = response.headers;
+		this.body = body;
+	}
+}
 
-			signal.addEventListener("abort", onAbort, { once: true });
-		}
+/** The response body is not valid, like malformed json. */
+export class ParseError extends RequestError {
+	override readonly name = "ParseError";
 
-		return controller.signal;
-	};
+	constructor(options: RequestErrorOptions) {
+		super("Invalid response body", options);
+	}
+}
+
+/** The response body does not match the `schema`. */
+export class ValidationError extends RequestError {
+	override readonly name = "ValidationError";
+	readonly issues: ReadonlyArray<StandardSchemaV1.Issue>;
+
+	constructor(options: RequestErrorOptions & { issues: ReadonlyArray<StandardSchemaV1.Issue> }) {
+		super("Unexpected response body", options);
+		this.issues = options.issues;
+	}
+}
+
+/** Gateway statuses, which mean that a service behind the server is not available. */
+const serviceUnavailableStatuses = new Set([502, 503, 504]);
+
+/** The service could not be reached or did not respond in time, so retrying later may succeed. */
+export function isServiceUnavailableError(error: unknown): boolean {
+	return (
+		error instanceof TimeoutError ||
+		error instanceof NetworkError ||
+		(error instanceof HttpError && serviceUnavailableStatuses.has(error.status))
+	);
 }
